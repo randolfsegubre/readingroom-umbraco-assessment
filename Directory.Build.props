@@ -1,0 +1,13 @@
+<Project>
+
+  <!--
+    Shared build settings for every project in the solution.
+    Warnings become errors in our own libraries and tests, so problems fail the build early.
+    The Web project is excluded because it contains Umbraco template code we do not own.
+  -->
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'ReadingRoom.ArticleCMS.Web'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+</Project>
