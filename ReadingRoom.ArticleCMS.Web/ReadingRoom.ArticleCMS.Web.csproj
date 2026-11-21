@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms"/>
+    <PackageReference Include="Umbraco.Cms" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -28,8 +28,13 @@
   </PropertyGroup>
 
   <ItemGroup Condition="'$(UmbracoUseAppLocalIcu)' == 'true'">
-    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime"/>
+    <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" />
     <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="$(UmbracoAppLocalIcuVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReadingRoom.ArticleCMS.Core\ReadingRoom.ArticleCMS.Core.csproj" />
+    <ProjectReference Include="..\ReadingRoom.ArticleCMS.Data\ReadingRoom.ArticleCMS.Data.csproj" />
   </ItemGroup>
 
 
