@@ -470,13 +470,13 @@ umbraco-package-schema.json
 # Temp folder containing Examine indexes, NuCache, MediaCache, etc.
 /umbraco/Data/TEMP/
 
-# SQLite database files
-/umbraco/Data/*.sqlite.db
+# SQLite database files: the database is committed (sample content), but not its temporary files.
+# /umbraco/Data/*.sqlite.db
 /umbraco/Data/*.sqlite.db-shm
 /umbraco/Data/*.sqlite.db-wal
 
 # Log files
 /umbraco/Logs/
 
-# Media files
-/wwwroot/media/
+# Media files are committed: the sample articles reference them.
+# /wwwroot/media/

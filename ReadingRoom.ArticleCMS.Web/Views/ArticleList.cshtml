@@ -1,0 +1,26 @@
+
+@inherits UmbracoViewPage<ArticleList>
+@{
+    Layout = "_Layout";
+    IEnumerable<Article> articles = Model.Children<Article>()
+        .OrderByDescending(article => article.PublishDate);
+}
+
+<h1>@Model.Name</h1>
+
+@if (articles.Any())
+{
+    <ul class="article-list">
+        @foreach (Article article in articles)
+        {
+            <li>
+                <a href="@article.Url()">@article.Title</a>
+                <time class="article-meta" datetime="@article.PublishDate.ToString("yyyy-MM-dd")">@article.PublishDate.ToString("d MMMM yyyy")</time>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>There are no articles yet.</p>
+}
