@@ -1,0 +1,29 @@
+@inherits UmbracoViewPage<Article>
+@{
+    Layout = "_Layout";
+    ArticleList? articleList = Model.Parent<ArticleList>();
+}
+
+<article>
+    <h1>@Model.Title</h1>
+
+    <p class="article-meta">
+        <time datetime="@Model.PublishDate.ToString("yyyy-MM-dd")">@Model.PublishDate.ToString("d MMMM yyyy")</time>
+    </p>
+
+    @if (Model.HeroImage is not null)
+    {
+        <figure>
+            <img class="article-hero" src="@Model.HeroImage.Url()" alt="@Model.Title" width="1200" height="675" />
+        </figure>
+    }
+
+    <p><strong>@Model.Intro</strong></p>
+
+    @Model.Body
+</article>
+
+@if (articleList is not null)
+{
+    <p><a href="@articleList.Url()">Back to all articles</a></p>
+}
