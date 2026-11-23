@@ -1,0 +1,19 @@
+﻿{
+  "id": "ReadingRoom.Editors",
+  "name": "Reading Room Editors",
+  "version": "1.1.1",
+  "extensions": [
+    {
+      "type": "propertyEditorUi",
+      "alias": "ReadingRoom.PropertyEditorUi.KeyTakeaways",
+      "name": "Key Takeaways Property Editor UI",
+      "element": "/App_Plugins/ReadingRoom.Editors/key-takeaways.js",
+      "meta": {
+        "label": "Key Takeaways",
+        "icon": "icon-autofill",
+        "group": "#propertyEditorUIGroups_common",
+        "propertyEditorSchemaAlias": "Umbraco.MultipleTextstring"
+      }
+    }
+  ]
+}
