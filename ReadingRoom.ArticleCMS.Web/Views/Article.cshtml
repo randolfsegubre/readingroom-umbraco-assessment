@@ -1,7 +1,10 @@
 @inherits UmbracoViewPage<Article>
+@using ReadingRoom.ArticleCMS.Core.ReadingTime
+@inject IReadingTimeService ReadingTimeCalculator
 @{
     Layout = "_Layout";
     ArticleList? articleList = Model.Parent<ArticleList>();
+    int readingMinutes = ReadingTimeCalculator.GetMinutes(Model.Body?.ToHtmlString());
 }
 
 <article>
@@ -9,6 +12,10 @@
 
     <p class="article-meta">
         <time datetime="@Model.PublishDate.ToString("yyyy-MM-dd")">@Model.PublishDate.ToString("d MMMM yyyy")</time>
+        @if (readingMinutes > 0)
+        {
+            <span>&middot; ~@readingMinutes min read</span>
+        }
     </p>
 
     @if (Model.HeroImage is not null)

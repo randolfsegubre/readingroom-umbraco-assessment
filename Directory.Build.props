@@ -8,6 +8,8 @@
   <PropertyGroup Condition="'$(MSBuildProjectName)' != 'ReadingRoom.ArticleCMS.Web'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>Recommended</AnalysisMode>
   </PropertyGroup>
 
 </Project>
