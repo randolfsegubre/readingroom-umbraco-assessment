@@ -1,5 +1,6 @@
 @inherits UmbracoViewPage<Article>
 @using ReadingRoom.ArticleCMS.Core.ReadingTime
+@using ReadingRoom.ArticleCMS.Core.Constants
 @inject IReadingTimeService ReadingTimeCalculator
 @{
     Layout = "_Layout";
@@ -20,7 +21,7 @@
     <h1 class="display-6 mb-2">@Model.Title</h1>
 
     <p class="text-body-secondary mb-4">
-        <time datetime="@Model.PublishDate.ToString("yyyy-MM-dd")">@Model.PublishDate.ToString("d MMMM yyyy")</time>
+        <time datetime="@Model.PublishDate.ToString(DateFormats.MachineReadable)">@Model.PublishDate.ToString(DateFormats.Display)</time>
         @if (readingMinutes > 0)
         {
             <span class="badge text-bg-secondary ms-2">~@readingMinutes min read</span>

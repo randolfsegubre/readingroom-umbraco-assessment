@@ -7,6 +7,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Infrastructure.Persistence;
 using Umbraco.Cms.Web.Website.Controllers;
+using ReadingRoom.ArticleCMS.Core.Constants;
 
 namespace ReadingRoom.ArticleCMS.Web.Controllers;
 
@@ -15,8 +16,6 @@ namespace ReadingRoom.ArticleCMS.Web.Controllers;
 /// </summary>
 public sealed class NewsletterSurfaceController : SurfaceController
 {
-    public const string MessageKey = "NewsletterMessage";
-
     private readonly ILogger<NewsletterSurfaceController> _logger;
 
     public NewsletterSurfaceController(
@@ -45,7 +44,7 @@ public sealed class NewsletterSurfaceController : SurfaceController
         _logger.LogInformation("A newsletter sign-up was received.");
 
         // Post/Redirect/Get: the redirect stops a browser refresh from posting the form again.
-        TempData[MessageKey] = "Thank you. You are on the list.";
+        TempData[TempDataKeys.NewsletterMessage] = "Thank you. You are on the list.";
         return RedirectToCurrentUmbracoPage();
     }
 }

@@ -1,7 +1,9 @@
+@using ReadingRoom.ArticleCMS.Core.Constants
+@using ReadingRoom.ArticleCMS.Data.Models.ViewModels
 @using ReadingRoom.ArticleCMS.Web.Controllers
 @{
-    string? attemptedEmail = ViewData.ModelState["Email"]?.AttemptedValue;
-    string? thankYou = TempData[NewsletterSurfaceController.MessageKey] as string;
+    string? attemptedEmail = ViewData.ModelState[nameof(NewsletterSignUpViewModel.Email)]?.AttemptedValue;
+    string? thankYou = TempData[TempDataKeys.NewsletterMessage] as string;
 }
 
 <section class="card mt-5">
@@ -16,9 +18,9 @@
         @using (Html.BeginUmbracoForm<NewsletterSurfaceController>(nameof(NewsletterSurfaceController.Subscribe)))
         {
             <div class="mb-3">
-                <label for="Email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="Email" name="Email" value="@attemptedEmail" />
-                @Html.ValidationMessage("Email", new { @class = "text-danger small" })
+                <label for="@nameof(NewsletterSignUpViewModel.Email)" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="@nameof(NewsletterSignUpViewModel.Email)" name="@nameof(NewsletterSignUpViewModel.Email)" value="@attemptedEmail" />
+                @Html.ValidationMessage(nameof(NewsletterSignUpViewModel.Email), new { @class = "text-danger small" })
             </div>
             <button type="submit" class="btn btn-primary">Subscribe</button>
         }
