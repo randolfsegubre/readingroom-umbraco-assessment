@@ -16,43 +16,47 @@
     }
 }
 
-<article>
-    <h1>@Model.Title</h1>
+<article class="article-container">
+    <h1 class="display-6 mb-2">@Model.Title</h1>
 
-    <p class="article-meta">
+    <p class="text-body-secondary mb-4">
         <time datetime="@Model.PublishDate.ToString("yyyy-MM-dd")">@Model.PublishDate.ToString("d MMMM yyyy")</time>
         @if (readingMinutes > 0)
         {
-            <span>&middot; ~@readingMinutes min read</span>
+            <span class="badge text-bg-secondary ms-2">~@readingMinutes min read</span>
         }
     </p>
 
     @if (Model.HeroImage is not null)
     {
-        <figure>
-            <img class="article-hero" src="@Model.HeroImage.Url()" alt="@Model.Title" width="1200" height="675" />
+        <figure class="mb-4">
+            <img class="img-fluid rounded" src="@Model.HeroImage.Url()" alt="@Model.Title" width="1200" height="675" />
         </figure>
     }
 
-    <p><strong>@Model.Intro</strong></p>
+    <p class="lead">@Model.Intro</p>
 
     @if (takeaways.Count > 0)
     {
-        <aside class="key-takeaways">
-            <h2>Key takeaways</h2>
-            <ul>
-                @foreach (string takeaway in takeaways)
-                {
-                    <li>@takeaway</li>
-                }
-            </ul>
+        <aside class="card border-primary-subtle bg-primary-subtle mb-4">
+            <div class="card-body">
+                <h2 class="h5">Key takeaways</h2>
+                <ul class="mb-0">
+                    @foreach (string takeaway in takeaways)
+                    {
+                        <li>@takeaway</li>
+                    }
+                </ul>
+            </div>
         </aside>
     }
 
-    @Model.Body
-</article>
+    <div class="article-body">
+        @Model.Body
+    </div>
 
-@if (articleList is not null)
-{
-    <p><a href="@articleList.Url()">Back to all articles</a></p>
-}
+    @if (articleList is not null)
+    {
+        <a class="btn btn-outline-secondary mt-4" href="@articleList.Url()">Back to all articles</a>
+    }
+</article>
