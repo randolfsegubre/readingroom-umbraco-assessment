@@ -5,6 +5,15 @@
     Layout = "_Layout";
     ArticleList? articleList = Model.Parent<ArticleList>();
     int readingMinutes = ReadingTimeCalculator.GetMinutes(Model.Body?.ToHtmlString());
+
+    List<string> takeaways = new List<string>();
+    foreach (string takeaway in Model.TakeawaysList ?? Enumerable.Empty<string>())
+    {
+        if (!string.IsNullOrWhiteSpace(takeaway))
+        {
+            takeaways.Add(takeaway);
+        }
+    }
 }
 
 <article>
@@ -26,6 +35,19 @@
     }
 
     <p><strong>@Model.Intro</strong></p>
+
+    @if (takeaways.Count > 0)
+    {
+        <aside class="key-takeaways">
+            <h2>Key takeaways</h2>
+            <ul>
+                @foreach (string takeaway in takeaways)
+                {
+                    <li>@takeaway</li>
+                }
+            </ul>
+        </aside>
+    }
 
     @Model.Body
 </article>
