@@ -1,7 +1,4 @@
-using ReadingRoom.ArticleCMS.Core.ReadingTime;
 using Umbraco.Cms.Core.Composing;
-using Umbraco.Cms.Core.DependencyInjection;
-using ReadingRoom.ArticleCMS.Core.Constants;
 
 namespace ReadingRoom.ArticleCMS.Web.Composers;
 
