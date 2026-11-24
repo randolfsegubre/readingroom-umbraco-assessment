@@ -24,7 +24,7 @@ From the repository root:
 
 The site listens on https://localhost:44308 and http://localhost:26160 (both are set in `Properties/launchSettings.json`). The backoffice is at `/umbraco` on either address. If the browser warns about the https certificate, run `dotnet dev-certs https --trust` once.
 
-In Visual Studio, open `ReadingRoom.ArticleCMS.slnx`, make the Web project the startup project, choose the "IIS Express" profile and press F5. It uses the same addresses.
+In Visual Studio, open `ReadingRoom.ArticleCMS.slnx`, make the Web project the startup project, choose the "Web" profile (opens the site) or the "Umbraco" profile (opens the backoffice login) and press F5. Both use the same addresses.
 
 Use only one of the two at a time. They share one port and one database.
 
