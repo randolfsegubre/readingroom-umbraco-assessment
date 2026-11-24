@@ -16,6 +16,7 @@
     </header>
     <main class="container py-4">
         @RenderBody()
+        @await Html.PartialAsync("NewsletterForm")
     </main>
     <footer class="container py-4 text-body-secondary small">
         Built with Umbraco 17 and .NET 10

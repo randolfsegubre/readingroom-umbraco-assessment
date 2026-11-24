@@ -1,0 +1,26 @@
+@using ReadingRoom.ArticleCMS.Web.Controllers
+@{
+    string? attemptedEmail = ViewData.ModelState["Email"]?.AttemptedValue;
+    string? thankYou = TempData[NewsletterSurfaceController.MessageKey] as string;
+}
+
+<section class="card mt-5">
+    <div class="card-body">
+        <h2 class="h5 card-title">Get new articles by email</h2>
+
+        @if (!string.IsNullOrEmpty(thankYou))
+        {
+            <div class="alert alert-success" role="status">@thankYou</div>
+        }
+
+        @using (Html.BeginUmbracoForm<NewsletterSurfaceController>(nameof(NewsletterSurfaceController.Subscribe)))
+        {
+            <div class="mb-3">
+                <label for="Email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="Email" name="Email" value="@attemptedEmail" />
+                @Html.ValidationMessage("Email", new { @class = "text-danger small" })
+            </div>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+        }
+    </div>
+</section>
