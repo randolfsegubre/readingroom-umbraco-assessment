@@ -1,8 +1,5 @@
 namespace ReadingRoom.ArticleCMS.Core.Constants;
 
-/// <summary>
-/// Date formats used when an article's publish date is shown.
-/// </summary>
 public static class DateFormats
 {
     /// <summary>
