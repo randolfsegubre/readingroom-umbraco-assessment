@@ -1,7 +1,7 @@
 {
   "id": "ReadingRoom.Editors",
   "name": "Reading Room Editors",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "extensions": [
     {
       "type": "propertyEditorUi",
@@ -56,6 +56,10 @@
             "limitsMinMax": "Takeaways: minimum {0}, maximum {1}",
             "limitsMax": "Takeaways: maximum {0}",
             "limitsMin": "Takeaways: minimum {0}",
+            "tooFew": "Add at least {0} takeaways. There are {1} now.",
+            "tooMany": "The maximum is {0} takeaways. There are {1} now.",
+            "moveUpLabel": "Move takeaway {0} up",
+            "moveDownLabel": "Move takeaway {0} down",
             "articleStats": "Article stats",
             "publishedArticles": "Published articles:",
             "latestArticles": "Latest articles",
@@ -79,6 +83,10 @@
             "limitsMinMax": "Puntos clave: mínimo {0}, máximo {1}",
             "limitsMax": "Puntos clave: máximo {0}",
             "limitsMin": "Puntos clave: mínimo {0}",
+            "tooFew": "Añade al menos {0} puntos clave. Ahora hay {1}.",
+            "tooMany": "El máximo es de {0} puntos clave. Ahora hay {1}.",
+            "moveUpLabel": "Subir el punto clave {0}",
+            "moveDownLabel": "Bajar el punto clave {0}",
             "articleStats": "Estadísticas de artículos",
             "publishedArticles": "Artículos publicados:",
             "latestArticles": "Últimos artículos",

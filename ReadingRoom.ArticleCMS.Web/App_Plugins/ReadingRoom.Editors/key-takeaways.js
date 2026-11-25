@@ -1,20 +1,49 @@
 import { UmbLitElement } from '@umbraco-cms/backoffice/lit-element';
-import { html, css } from '@umbraco-cms/backoffice/external/lit';
+import { html, css, repeat } from '@umbraco-cms/backoffice/external/lit';
+import { UmbChangeEvent } from '@umbraco-cms/backoffice/event';
+import { UmbFormControlMixin } from '@umbraco-cms/backoffice/validation';
+import { UmbSorterController } from '@umbraco-cms/backoffice/sorter';
 
-export default class KeyTakeawaysElement extends UmbLitElement {
+let editorCount = 0;
+
+export default class KeyTakeawaysElement extends UmbFormControlMixin(UmbLitElement, undefined) {
   static properties = {
-    value: { attribute: false },
     _min: { state: true },
     _max: { state: true },
     _placeholder: { state: true },
   };
 
+  // each row keeps its own id, so two rows with the same text can still be told apart while sorting.
+  #entries = [];
+  #lastId = 0;
+
+  #sorter = new UmbSorterController(this, {
+    getUniqueOfElement: (element) => element.getAttribute('data-entry-id'),
+    getUniqueOfModel: (entry) => entry.id,
+    identifier: `ReadingRoom.Sorter.KeyTakeaways.${++editorCount}`,
+    itemSelector: '.row',
+    containerSelector: '.rows',
+    handleSelector: '.handle',
+    onChange: ({ model }) => this.#setEntries(model),
+  });
+
   constructor() {
     super();
-    this.value = [];
     this._min = 0;
     this._max = 0;
     this._placeholder = '';
+
+    // these stop Save and publish in the backoffice. Umbraco checks the same limits on the server.
+    this.addValidator(
+      'rangeUnderflow',
+      () => this.#tooFewMessage(),
+      () => this.#isTooFew()
+    );
+    this.addValidator(
+      'rangeOverflow',
+      () => this.#tooManyMessage(),
+      () => this.#isTooMany()
+    );
   }
 
   set config(config) {
@@ -27,29 +56,74 @@ export default class KeyTakeawaysElement extends UmbLitElement {
     this._placeholder = config.getValueByAlias('placeholder') ?? '';
   }
 
+  willUpdate(changedProperties) {
+    super.willUpdate(changedProperties);
+
+    // rebuild the rows only when the value was changed from outside, so typing keeps the focus.
+    const items = this.#items();
+    const isSame = items.length === this.#entries.length
+      && items.every((text, index) => text === this.#entries[index].text);
+
+    if (!isSame) {
+      this.#entries = items.map((text) => this.#newEntry(text));
+      this.#sorter.setModel(this.#entries);
+    }
+  }
+
   #items() {
     return Array.isArray(this.value) ? this.value : [];
   }
 
-  #setItems(items) {
-    this.value = items;
-    this.dispatchEvent(new Event('change', { bubbles: true }));
+  #newEntry(text) {
+    this.#lastId += 1;
+    return { id: String(this.#lastId), text };
+  }
+
+  #setEntries(entries) {
+    this.#entries = entries;
+    this.#sorter.setModel(entries);
+    this.value = entries.map((entry) => entry.text);
+    this.pristine = false;
+    this.dispatchEvent(new UmbChangeEvent());
   }
 
   #addItem() {
-    this.#setItems([...this.#items(), '']);
+    this.#setEntries([...this.#entries, this.#newEntry('')]);
   }
 
   #changeItem(index, text) {
-    const items = [...this.#items()];
-    items[index] = text;
-    this.#setItems(items);
+    const entries = [...this.#entries];
+    entries[index] = { ...entries[index], text };
+    this.#setEntries(entries);
   }
 
   #removeItem(index) {
-    const items = [...this.#items()];
-    items.splice(index, 1);
-    this.#setItems(items);
+    const entries = [...this.#entries];
+    entries.splice(index, 1);
+    this.#setEntries(entries);
+  }
+
+  #moveItem(index, step) {
+    const entries = [...this.#entries];
+    const [entry] = entries.splice(index, 1);
+    entries.splice(index + step, 0, entry);
+    this.#setEntries(entries);
+  }
+
+  #isTooFew() {
+    return this._min > 0 && this.#items().length < this._min;
+  }
+
+  #isTooMany() {
+    return this._max > 0 && this.#items().length > this._max;
+  }
+
+  #tooFewMessage() {
+    return this.localize.term('readingRoom_tooFew', this._min, this.#items().length);
+  }
+
+  #tooManyMessage() {
+    return this.localize.term('readingRoom_tooMany', this._max, this.#items().length);
   }
 
   #describeLimits() {
@@ -68,36 +142,69 @@ export default class KeyTakeawaysElement extends UmbLitElement {
     return '';
   }
 
-  render() {
-    const items = this.#items();
+  #renderLimits() {
+    // Umbraco shows the validation message under the editor, so only the colour changes here.
+    const isOutside = this.#isTooFew() || this.#isTooMany();
+
+    return html`<span class=${isOutside ? 'error' : 'limits'}>${this.#describeLimits()}</span>`;
+  }
+
+  #renderRow(entry, index) {
+    const count = this.#entries.length;
 
     return html`
-      ${items.map(
-      (item, index) => html`
-          <div class="row">
-            <uui-input
-              label=${this.localize.term('readingRoom_takeawayLabel', index + 1)}
-              placeholder=${this._placeholder}
-              .value=${item}
-              @input=${(event) => this.#changeItem(index, event.target.value)}></uui-input>
-            <uui-button
-              look="secondary"
-              color="danger"
-              label=${this.localize.term('readingRoom_removeTakeawayLabel', index + 1)}
-              ?disabled=${items.length <= this._min}
-              @click=${() => this.#removeItem(index)}>
-              ${this.localize.term('readingRoom_remove')}
-            </uui-button>
-          </div>
-        `
-    )}
+      <div class="row" data-entry-id=${entry.id}>
+        <uui-icon name="icon-grip" class="handle"></uui-icon>
+        <uui-input
+          label=${this.localize.term('readingRoom_takeawayLabel', index + 1)}
+          placeholder=${this._placeholder}
+          .value=${entry.text}
+          @input=${(event) => this.#changeItem(index, event.target.value)}
+          @change=${(event) => event.stopPropagation()}></uui-input>
+        <uui-button
+          compact
+          look="secondary"
+          label=${this.localize.term('readingRoom_moveUpLabel', index + 1)}
+          ?disabled=${index === 0}
+          @click=${() => this.#moveItem(index, -1)}>
+          <uui-icon name="icon-arrow-up"></uui-icon>
+        </uui-button>
+        <uui-button
+          compact
+          look="secondary"
+          label=${this.localize.term('readingRoom_moveDownLabel', index + 1)}
+          ?disabled=${index === count - 1}
+          @click=${() => this.#moveItem(index, 1)}>
+          <uui-icon name="icon-arrow-down"></uui-icon>
+        </uui-button>
+        <uui-button
+          look="secondary"
+          color="danger"
+          label=${this.localize.term('readingRoom_removeTakeawayLabel', index + 1)}
+          ?disabled=${count <= this._min}
+          @click=${() => this.#removeItem(index)}>
+          ${this.localize.term('readingRoom_remove')}
+        </uui-button>
+      </div>
+    `;
+  }
+
+  render() {
+    return html`
+      <div class="rows">
+        ${repeat(
+          this.#entries,
+          (entry) => entry.id,
+          (entry, index) => this.#renderRow(entry, index)
+        )}
+      </div>
       <div class="footer">
         <uui-button
           look="placeholder"
           label=${this.localize.term('readingRoom_addTakeaway')}
-          ?disabled=${this._max > 0 && items.length >= this._max}
+          ?disabled=${this._max > 0 && this.#entries.length >= this._max}
           @click=${() => this.#addItem()}></uui-button>
-        <span class="limits">${this.#describeLimits()}</span>
+        ${this.#renderLimits()}
       </div>
     `;
   }
@@ -105,8 +212,17 @@ export default class KeyTakeawaysElement extends UmbLitElement {
   static styles = css`
     .row {
       display: flex;
+      align-items: center;
       gap: 8px;
       margin-bottom: 8px;
+    }
+
+    .handle {
+      cursor: grab;
+    }
+
+    .--umb-sorter-placeholder {
+      opacity: 0.3;
     }
 
     uui-input {
@@ -121,6 +237,11 @@ export default class KeyTakeawaysElement extends UmbLitElement {
 
     .limits {
       color: var(--uui-color-warning-standalone);
+    }
+
+    .error {
+      color: var(--uui-color-danger-standalone);
+      font-weight: 700;
     }
   `;
 }

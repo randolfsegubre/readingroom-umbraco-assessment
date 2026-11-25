@@ -8,7 +8,7 @@ Status: every required part of the test is done, and so are the four stretch goa
 
 - Document types: Article List and Article. Each has a template, a strongly typed model and a Razor view (`Views/ArticleList.cshtml` and `Views/Article.cshtml`). An article has a title, an intro, a body, a publish date, a hero image and a list of key takeaways.
 - Reading time: a small service counts the words in the article body, and the article page shows "~N min read". The reading speed comes from a Site Settings document that editors can change, with `appsettings.json` as the fallback.
-- Key takeaways: a custom property editor built as an Umbraco 17 Property Editor User Interface (UI). It is a Lit element registered by `umbraco-package.json`. Editors add, edit and remove short lines. The editor reads a placeholder, a minimum and a maximum from its Data Type, and its text is translated through English and Spanish localization files.
+- Key takeaways: a custom property editor built as an Umbraco 17 Property Editor User Interface (UI). It is a Lit element registered by `umbraco-package.json`. Editors add, edit, remove and reorder short lines, by dragging the handle or with the up and down buttons. The editor reads a placeholder, a minimum and a maximum from its Data Type, says why when the number of lines is outside the limits, and its text is translated through English and Spanish localization files.
 - Dashboard: an "Article stats" tab in the Content section. It calls a Management Application Programming Interface (API) endpoint and shows, for each language, the number of published articles and the five newest titles.
 - Newsletter form: a SurfaceController receives the form, shows validation messages, and redirects back to the page with a thank-you message. It does not store the email address.
 - Two languages: English (the default) and Spanish. The title, intro, takeaways and body vary by culture. The publish date and the hero image are shared. The pages are served under `/en/` and `/es/`, with a language switcher, labels from Umbraco dictionary items and a matching `lang` attribute on the page.
@@ -146,7 +146,7 @@ Web references Core and Data. Data references Core. Tests references Core. Core 
 ## Trade-offs
 
 - The reading speed now has two places: the Site Settings document and `appsettings.json`. The editor value wins when it is set. I chose this so editors can change the speed without a deployment while the service stays free of Umbraco code. The cost is one more thing to check when the speed looks wrong.
-- The takeaways minimum and maximum guide the editor but are not validation, so an article below the minimum still saves.
+- The takeaways minimum and maximum are checked twice. The editor shows the reason and stops publishing, and Umbraco checks the same limits on the server. An article outside the limits can still be saved as a draft.
 - The editor is plain JavaScript with no build step. That means no extra tooling and very little code, but it has no type checking.
 - Reusing Umbraco's Multiple Text String storage means less code. The cost is that the lines are saved as one text separated by line breaks, so a takeaway cannot contain a line break.
 - Committing the database and media makes the project easy to run. The cost is binary files in Git and a cleaning step before each commit.
@@ -157,8 +157,6 @@ Web references Core and Data. Data references Core. Tests references Core. Core 
 ## Improvements
 
 - Have the Spanish text reviewed by a native speaker.
-- Enforce the takeaways minimum and maximum as validation, not only as guidance in the editor.
-- Add drag to reorder for the takeaways.
 - Store the newsletter sign-ups, or send them to an email service.
 - Add tests for the adapter and the stats endpoint, and a continuous integration (CI) build that runs the tests.
 - Build the database from the uSync files, with the steps written down and tested, so a refresh does not depend on a hand-cleaned binary file.
