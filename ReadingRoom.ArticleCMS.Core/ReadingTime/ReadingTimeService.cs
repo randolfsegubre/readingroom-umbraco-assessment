@@ -6,23 +6,27 @@ namespace ReadingRoom.ArticleCMS.Core.ReadingTime;
 
 public sealed partial class ReadingTimeService : IReadingTimeService
 {
-    private readonly int _wordsPerMinute;
+    private readonly int _defaultWordsPerMinute;
+    private readonly IReadingSpeedSource _speedSource;
 
     /// <summary>
     /// Creates the service from its settings.
     /// </summary>
-    /// <param name="options">The reading speed. WordsPerMinute must be greater than zero.</param>
+    /// <param name="options">The default reading speed. WordsPerMinute must be greater than zero.</param>
+    /// <param name="speedSource">Gives the reading speed that an editor has set, when there is one.</param>
     /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public ReadingTimeService(ReadingTimeOptions options)
+    public ReadingTimeService(ReadingTimeOptions options, IReadingSpeedSource speedSource)
     {
         ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(speedSource);
 
         if (options.WordsPerMinute <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(options), "WordsPerMinute must be greater than zero.");
         }
 
-        _wordsPerMinute = options.WordsPerMinute;
+        _defaultWordsPerMinute = options.WordsPerMinute;
+        _speedSource = speedSource;
     }
 
 
@@ -47,7 +51,21 @@ public sealed partial class ReadingTimeService : IReadingTimeService
         int wordCount = WordRegex().Count(text);
 
         // divide by the reading speed and round up with whole-number arithmetic.
-        return (wordCount + _wordsPerMinute - 1) / _wordsPerMinute;
+        int wordsPerMinute = GetWordsPerMinute();
+        return (wordCount + wordsPerMinute - 1) / wordsPerMinute;
+    }
+
+    private int GetWordsPerMinute()
+    {
+        // use the speed that an editor has set, when there is one.
+        int? editorWordsPerMinute = _speedSource.GetWordsPerMinute();
+        if (editorWordsPerMinute.HasValue && editorWordsPerMinute.Value > 0)
+        {
+            return editorWordsPerMinute.Value;
+        }
+
+        // otherwise use the default speed from the app settings.
+        return _defaultWordsPerMinute;
     }
 
     [GeneratedRegex("<[^>]*>")]
