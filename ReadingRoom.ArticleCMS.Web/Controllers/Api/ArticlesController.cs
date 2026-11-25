@@ -1,3 +1,4 @@
+using ReadingRoom.ArticleCMS.Core.Articles;
 using ReadingRoom.ArticleCMS.Core.Takeaways;
 using ReadingRoom.ArticleCMS.Web.Adapters;
 using ReadingRoom.ArticleCMS.Web.Authentication;
@@ -126,6 +127,8 @@ public sealed class ArticlesController : ControllerBase
         target.Intro = article.Intro ?? string.Empty;
         target.PublishDate = article.PublishDate;
         target.ReadingMinutes = _readingTimeService.GetMinutes(article.Body?.ToHtmlString());
+        target.ReadingLevel = ReadingLevels.Find(article.ReadingLevel)?.Value;
+        target.EditorRating = StarRating.IsRated(article.EditorRating) ? article.EditorRating : null;
         target.Url = article.Url(culture);
     }
 

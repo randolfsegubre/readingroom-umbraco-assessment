@@ -1,7 +1,7 @@
 {
   "id": "ReadingRoom.Editors",
   "name": "Reading Room Editors",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "extensions": [
     {
       "type": "propertyEditorUi",
@@ -22,6 +22,30 @@
             }
           ]
         }
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "ReadingRoom.PropertyEditorUi.ReadingLevel",
+      "name": "Reading Level Property Editor UI",
+      "element": "/App_Plugins/ReadingRoom.Editors/reading-level.js",
+      "meta": {
+        "label": "Reading Level",
+        "icon": "icon-academy",
+        "group": "#propertyEditorUIGroups_common",
+        "propertyEditorSchemaAlias": "Umbraco.Plain.String"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "ReadingRoom.PropertyEditorUi.StarRating",
+      "name": "Star Rating Property Editor UI",
+      "element": "/App_Plugins/ReadingRoom.Editors/star-rating.js",
+      "meta": {
+        "label": "Star Rating",
+        "icon": "icon-rate",
+        "group": "#propertyEditorUIGroups_common",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
       }
     },
     {
@@ -49,6 +73,13 @@
         "culture": "en",
         "localizations": {
           "readingRoom": {
+            "readingLevel": "Reading level",
+            "levelNotSet": "Not set",
+            "levelBeginner": "Beginner",
+            "levelIntermediate": "Intermediate",
+            "levelAdvanced": "Advanced",
+            "rateStars": "Rate {0} out of {1}",
+            "clearRating": "Clear",
             "addTakeaway": "Add takeaway",
             "remove": "Remove",
             "takeawayLabel": "Takeaway {0}",
@@ -76,6 +107,13 @@
         "culture": "es",
         "localizations": {
           "readingRoom": {
+            "readingLevel": "Nivel de lectura",
+            "levelNotSet": "Sin definir",
+            "levelBeginner": "Principiante",
+            "levelIntermediate": "Intermedio",
+            "levelAdvanced": "Avanzado",
+            "rateStars": "Valorar con {0} de {1}",
+            "clearRating": "Borrar",
             "addTakeaway": "Añadir punto clave",
             "remove": "Eliminar",
             "takeawayLabel": "Punto clave {0}",

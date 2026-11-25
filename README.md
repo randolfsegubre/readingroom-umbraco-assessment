@@ -6,14 +6,15 @@ Status: every required part of the test is done, and so are the four stretch goa
 
 ## What is in it
 
-- Document types: Article List and Article. Each has a template, a strongly typed model and a Razor view (`Views/ArticleList.cshtml` and `Views/Article.cshtml`). An article has a title, an intro, a body, a publish date, a hero image and a list of key takeaways.
+- Document types: Article List and Article. Each has a template, a strongly typed model and a Razor view (`Views/ArticleList.cshtml` and `Views/Article.cshtml`). An article has a title, an intro, a body, a publish date, a hero image, a list of key takeaways, a reading level and an editor rating.
 - Reading time: a small service counts the words in the article body, and the article page shows "~N min read". The reading speed comes from a Site Settings document that editors can change, with `appsettings.json` as the fallback.
 - Key takeaways: a custom property editor built as an Umbraco 17 Property Editor User Interface (UI). It is a Lit element registered by `umbraco-package.json`. Editors add, edit, remove and reorder short lines, by dragging the handle or with the up and down buttons. The editor reads a placeholder, a minimum and a maximum from its Data Type, says why when the number of lines is outside the limits, and its text is translated through English and Spanish localization files.
 - Dashboard: an "Article stats" tab in the Content section. It calls a Management Application Programming Interface (API) endpoint and shows, for each language, the number of published articles and the five newest titles.
+- Reading level and star rating: two more custom editors. The reading level is a drop down list (beginner, intermediate or advanced). The star rating is a row of one to five stars with a Clear button. The article page shows both next to the reading time, in the language of the page, and the articles API returns them.
 - Newsletter form: a SurfaceController receives the form, shows validation messages, and redirects back to the page with a thank-you message. It does not store the email address.
-- Two languages: English (the default) and Spanish. The title, intro, takeaways and body vary by culture. The publish date and the hero image are shared. The pages are served under `/en/` and `/es/`, with a language switcher, labels from Umbraco dictionary items and a matching `lang` attribute on the page.
+- Two languages: English (the default) and Spanish. The title, intro, takeaways and body vary by culture. The publish date, the hero image, the reading level and the editor rating are shared. The pages are served under `/en/` and `/es/`, with a language switcher, labels from Umbraco dictionary items and a matching `lang` attribute on the page.
 - Application Programming Interfaces: the Umbraco Content Delivery API and a small read-only articles API, both behind an API key and both listed in Swagger.
-- Tests: xUnit tests for the reading time service, the API key check and the takeaway lines.
+- Tests: xUnit tests for the reading time service, the API key check, the takeaway lines, the reading levels and the star rating.
 
 ## Quick start
 
@@ -71,7 +72,7 @@ A small read-only API of our own sits next to the Delivery API. It uses the same
 
 | Request | What it returns |
 |---|---|
-| `GET /api/reading-room/articles` | The published articles of one language, newest first, with the title, intro, publish date, reading minutes and address. `total` counts all of them |
+| `GET /api/reading-room/articles` | The published articles of one language, newest first, with the title, intro, publish date, reading minutes, reading level, editor rating and address. `total` counts all of them |
 | `GET /api/reading-room/articles/{key}` | One article, also with the body, the key takeaways and the hero image address. The status is 404 when it is not published in that language |
 
 - `culture` chooses the language, for example `es`. Without it the default language is used. An unknown code gets the status 400.
@@ -108,7 +109,7 @@ Both backoffice extension options were built. The paths in this table are inside
 | Project | Purpose |
 |---|---|
 | ReadingRoom.ArticleCMS.Web | The Umbraco site: startup, views, controllers, the composers, the adapters to Umbraco, the backoffice extension in `App_Plugins` and the uSync files |
-| ReadingRoom.ArticleCMS.Core | Plain C# with no Umbraco dependency: the reading time service, its options, the contract for the reading speed, the API key check, the takeaway lines and shared constants |
+| ReadingRoom.ArticleCMS.Core | Plain C# with no Umbraco dependency: the reading time service, its options, the contract for the reading speed, the API key check, the takeaway lines, the reading levels, the star rating and shared constants |
 | ReadingRoom.ArticleCMS.Data | Umbraco-facing models: the Models Builder output for the document types, the view model of the newsletter form and the response models of the APIs |
 | ReadingRoom.ArticleCMS.Tests | xUnit tests for Core. The test folders mirror Core, and test doubles are in `Fakes` |
 
@@ -119,7 +120,7 @@ Web references Core and Data. Data references Core. Tests references Core. Core 
 - Models Builder runs in Development only (`appsettings.Development.json`) and writes its models into the Data project. Production keeps `ModelsMode` set to `Nothing`, so models are compiled and deployed and not generated live.
 - The reading time service lives in Core and does not know about Umbraco, so it can be unit tested on its own. It receives the body text as a string. To get the speed that an editor has set, it asks a small contract in Core, `IReadingSpeedSource`. The Web project supplies the implementation, `Adapters/SiteSettingsReadingSpeedSource`, which reads the published Site Settings document. When no value is set, or it is not above zero, the service uses `ReadingTime:WordsPerMinute` from `appsettings.json`.
 - `Composers/ReadingTimeComposer.cs` is the one place that registers the service and the adapter. Umbraco runs composers at startup, so this is the composition root. Both are scoped, not singletons, because the adapter reads published content that belongs to the current request. The view receives the service through `@inject`.
-- Vary by culture: Spanish is the second language, with no fallback language. Title, intro, takeaways and body vary, and the publish date and the hero image are shared. The Articles root has two hostnames, `/en` and `/es`.
+- Vary by culture: Spanish is the second language, with no fallback language. Title, intro, takeaways and body vary, and the publish date, the hero image, the reading level and the editor rating are shared. The Articles root has two hostnames, `/en` and `/es`.
 - Labels in the views come from Umbraco dictionary items, read with `GetDictionaryValueOrDefault` and the English text as the default. A missing or empty item still shows English. The newsletter validation messages and the thank-you message travel as dictionary keys and are translated when the form is rendered, so they follow the language of the page.
 - The stats endpoint sets the variation context for each language, so the titles come from that language. An article that is not published in a language is not counted for it. The endpoint needs a signed-in user who can open the Content section.
 - `Composers`, `Adapters` and `Controllers` hold the code that talks to Umbraco. An adapter is a class that implements a Core contract with Umbraco types. If there were more of them, I would move them into their own project.

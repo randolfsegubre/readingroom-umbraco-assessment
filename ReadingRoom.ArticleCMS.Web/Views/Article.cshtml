@@ -1,4 +1,5 @@
 @inherits UmbracoViewPage<Article>
+@using ReadingRoom.ArticleCMS.Core.Articles
 @using ReadingRoom.ArticleCMS.Core.ReadingTime
 @using ReadingRoom.ArticleCMS.Core.Takeaways
 @using ReadingRoom.ArticleCMS.Core.Constants
@@ -9,6 +10,8 @@
     int readingMinutes = ReadingTimeCalculator.GetMinutes(Model.Body?.ToHtmlString());
 
     List<string> takeaways = TakeawayLines.WithoutBlanks(Model.TakeawaysList);
+    ReadingLevel? readingLevel = ReadingLevels.Find(Model.ReadingLevel);
+    string ratingText = string.Format(Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.ArticleEditorRating, "Editor rating: {0} out of {1}"), Model.EditorRating, StarRating.Maximum);
 }
 
 <article class="article-container">
@@ -19,6 +22,14 @@
         @if (readingMinutes > 0)
         {
             <span class="badge text-bg-secondary ms-2">@string.Format(Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.ArticleMinRead, "~{0} min read"), readingMinutes)</span>
+        }
+        @if (readingLevel is not null)
+        {
+            <span class="badge text-bg-light border ms-2">@Umbraco.GetDictionaryValueOrDefault(readingLevel.DictionaryKey, readingLevel.EnglishName)</span>
+        }
+        @if (StarRating.IsRated(Model.EditorRating))
+        {
+            <span class="ms-2 text-warning-emphasis" role="img" aria-label="@ratingText" title="@ratingText">@StarRating.ToStars(Model.EditorRating)</span>
         }
     </p>
 
