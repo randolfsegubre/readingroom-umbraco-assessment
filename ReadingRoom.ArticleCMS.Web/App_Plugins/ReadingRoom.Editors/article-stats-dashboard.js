@@ -54,13 +54,18 @@ export default class ArticleStatsDashboardElement extends UmbLitElement {
 
     return html`
             <uui-box headline=${this.localize.term('readingRoom_articleStats')}>
-                <p>${this.localize.term('readingRoom_publishedArticles')} <strong>${this._stats.totalArticles}</strong></p>
-                <h3>${this.localize.term('readingRoom_latestArticles')}</h3>
-                <ul>
-                    ${this._stats.latestArticles.map(
-      (article) => html`<li>${article.title} <small>(${article.publishDate.substring(0, 10)})</small></li>`
-    )}
-                </ul>
+                ${this._stats.languages.map(
+                  (language) => html`
+                    <h3>${language.cultureName}</h3>
+                    <p>${this.localize.term('readingRoom_publishedArticles')} <strong>${language.totalArticles}</strong></p>
+                    <h4>${this.localize.term('readingRoom_latestArticles')}</h4>
+                    <ul>
+                        ${language.latestArticles.map(
+                    (article) => html`<li>${article.title} <small>(${article.publishDate.substring(0, 10)})</small></li>`
+                  )}
+                    </ul>
+                `
+                )}
             </uui-box>
         `;
   }

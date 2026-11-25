@@ -1,7 +1,7 @@
 {
   "id": "ReadingRoom.Editors",
   "name": "Reading Room Editors",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "extensions": [
     {
       "type": "propertyEditorUi",
