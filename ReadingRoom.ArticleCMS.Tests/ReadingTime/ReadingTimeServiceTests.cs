@@ -1,10 +1,11 @@
 using ReadingRoom.ArticleCMS.Core.ReadingTime;
+using ReadingRoom.ArticleCMS.Tests.Fakes;
 
-namespace ReadingRoom.ArticleCMS.Tests;
+namespace ReadingRoom.ArticleCMS.Tests.ReadingTime;
 
 public class ReadingTimeServiceTests
 {
-    private readonly ReadingTimeService _service = new ReadingTimeService(new ReadingTimeOptions());
+    private readonly ReadingTimeService _service = new ReadingTimeService(new ReadingTimeOptions(), new FakeReadingSpeedSource(null));
 
     [Theory]
     [InlineData(null)]
@@ -59,9 +60,28 @@ public class ReadingTimeServiceTests
     [Fact]
     public void GetMinutes_UsesTheConfiguredReadingSpeed()
     {
-        ReadingTimeService slowReader = new ReadingTimeService(new ReadingTimeOptions { WordsPerMinute = 100 });
+        ReadingTimeService slowReader = new ReadingTimeService(new ReadingTimeOptions { WordsPerMinute = 100 }, new FakeReadingSpeedSource(null));
 
         Assert.Equal(2, slowReader.GetMinutes(BuildText(101)));
+    }
+
+    [Fact]
+    public void GetMinutes_UsesTheEditorReadingSpeed_WhenOneIsSet()
+    {
+        ReadingTimeService service = new ReadingTimeService(new ReadingTimeOptions(), new FakeReadingSpeedSource(100));
+
+        Assert.Equal(2, service.GetMinutes(BuildText(101)));
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData(0)]
+    [InlineData(-5)]
+    public void GetMinutes_UsesTheDefaultReadingSpeed_WhenTheEditorSpeedIsNotSetOrNotPositive(int? editorWordsPerMinute)
+    {
+        ReadingTimeService service = new ReadingTimeService(new ReadingTimeOptions(), new FakeReadingSpeedSource(editorWordsPerMinute));
+
+        Assert.Equal(1, service.GetMinutes(BuildText(200)));
     }
 
     [Theory]
@@ -71,13 +91,19 @@ public class ReadingTimeServiceTests
     {
         ReadingTimeOptions options = new ReadingTimeOptions { WordsPerMinute = wordsPerMinute };
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ReadingTimeService(options));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new ReadingTimeService(options, new FakeReadingSpeedSource(null)));
     }
 
     [Fact]
     public void Constructor_Throws_WhenOptionsAreMissing()
     {
-        Assert.Throws<ArgumentNullException>(() => new ReadingTimeService(null!));
+        Assert.Throws<ArgumentNullException>(() => new ReadingTimeService(null!, new FakeReadingSpeedSource(null)));
+    }
+
+    [Fact]
+    public void Constructor_Throws_WhenTheSpeedSourceIsMissing()
+    {
+        Assert.Throws<ArgumentNullException>(() => new ReadingTimeService(new ReadingTimeOptions(), null!));
     }
 
     private static string BuildText(int wordCount)
