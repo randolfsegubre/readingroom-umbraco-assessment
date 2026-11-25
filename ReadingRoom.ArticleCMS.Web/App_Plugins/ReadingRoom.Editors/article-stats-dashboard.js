@@ -18,6 +18,9 @@ export default class ArticleStatsDashboardElement extends UmbLitElement {
     this._errorMessage = undefined;
 
     this.consumeContext(UMB_AUTH_CONTEXT, (authContext) => {
+      if (!authContext) {
+        return;
+      }
       this.#authContext = authContext;
       this.#loadStats();
     });
@@ -33,7 +36,7 @@ export default class ArticleStatsDashboardElement extends UmbLitElement {
     });
 
     if (!response.ok) {
-      this._errorMessage = 'The article statistics could not be loaded (status ' + response.status + ').';
+      this._errorMessage = this.localize.term('readingRoom_statsLoadFailed', response.status);
       return;
     }
 
@@ -42,17 +45,17 @@ export default class ArticleStatsDashboardElement extends UmbLitElement {
 
   render() {
     if (this._errorMessage) {
-      return html`<uui-box headline="Article stats"><p>${this._errorMessage}</p></uui-box>`;
+      return html`<uui-box headline=${this.localize.term('readingRoom_articleStats')}><p>${this._errorMessage}</p></uui-box>`;
     }
 
     if (!this._stats) {
-      return html`<uui-box headline="Article stats"><uui-loader></uui-loader></uui-box>`;
+      return html`<uui-box headline=${this.localize.term('readingRoom_articleStats')}><uui-loader></uui-loader></uui-box>`;
     }
 
     return html`
-            <uui-box headline="Article stats">
-                <p>Published articles: <strong>${this._stats.totalArticles}</strong></p>
-                <h3>Latest articles</h3>
+            <uui-box headline=${this.localize.term('readingRoom_articleStats')}>
+                <p>${this.localize.term('readingRoom_publishedArticles')} <strong>${this._stats.totalArticles}</strong></p>
+                <h3>${this.localize.term('readingRoom_latestArticles')}</h3>
                 <ul>
                     ${this._stats.latestArticles.map(
       (article) => html`<li>${article.title} <small>(${article.publishDate.substring(0, 10)})</small></li>`
