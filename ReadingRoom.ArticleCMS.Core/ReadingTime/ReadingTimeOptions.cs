@@ -1,7 +1,5 @@
 namespace ReadingRoom.ArticleCMS.Core.ReadingTime;
 
-
-// Settings for the reading time estimate. Bound from the "ReadingTime" section of appsettings.json.
 public class ReadingTimeOptions
 {
     /// <summary>
