@@ -4,6 +4,7 @@
   </Folder>
   <Project Path="ReadingRoom.ArticleCMS.Core/ReadingRoom.ArticleCMS.Core.csproj" Id="273667c8-ca38-4795-b894-51d154e909d3" />
   <Project Path="ReadingRoom.ArticleCMS.Data/ReadingRoom.ArticleCMS.Data.csproj" Id="ed9317b6-ef14-4a91-b12b-bb1368b6ecc5" />
+  <Project Path="ReadingRoom.ArticleCMS.IntegrationTests/ReadingRoom.ArticleCMS.IntegrationTests.csproj" />
   <Project Path="ReadingRoom.ArticleCMS.Tests/ReadingRoom.ArticleCMS.Tests.csproj" Id="98f6aed4-1a44-4607-bc5a-e49679d6e3d6" />
   <Project Path="ReadingRoom.ArticleCMS.Web/ReadingRoom.ArticleCMS.Web.csproj" />
 </Solution>

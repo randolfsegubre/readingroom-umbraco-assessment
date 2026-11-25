@@ -14,7 +14,7 @@ Status: every required part of the test is done, and so are the four stretch goa
 - Newsletter form: a SurfaceController receives the form, shows validation messages, and redirects back to the page with a thank-you message. It does not store the email address.
 - Two languages: English (the default) and Spanish. The title, intro, takeaways and body vary by culture. The publish date, the hero image, the reading level and the editor rating are shared. The pages are served under `/en/` and `/es/`, with a language switcher, labels from Umbraco dictionary items and a matching `lang` attribute on the page.
 - Application Programming Interfaces: the Umbraco Content Delivery API and a small read-only articles API, both behind an API key and both listed in Swagger.
-- Tests: xUnit tests for the reading time service, the API key check, the takeaway lines, the reading levels and the star rating.
+- Tests: xUnit tests for the reading time service, the API key check, the takeaway lines, the reading levels and the star rating. Integration tests start the real site and call the pages, the APIs and the reading speed setting. A GitHub Actions workflow builds and tests each pull request.
 
 ## Quick start
 
@@ -52,7 +52,11 @@ This is a throwaway account for local development only. Do not reuse it anywhere
 
 In Visual Studio 2026, open `ReadingRoom.ArticleCMS.slnx`, make the Web project the startup project, choose the "Web" profile (opens the site) or the "Umbraco" profile (opens the backoffice login) and press F5. Both use the same addresses. Use only one of the two at a time. They share one port and one database.
 
-Run the tests with `dotnet test` from the repository folder.
+Run the tests with `dotnet test` from the repository folder. Stop the site first, because a running site locks the files the build writes.
+
+The integration tests start the site in memory on a temporary copy of the committed database, so they do not change your database. They expect the committed content. If you edited content, restore the database first (see above). They take about half a minute.
+
+The workflow in `.github/workflows/ci.yml` runs the same build and tests on Windows for every pull request and every push to `main`.
 
 This was tried on Windows with Visual Studio 2026 and the `dotnet` command line. macOS and Linux were not tried.
 
@@ -112,8 +116,9 @@ Both backoffice extension options were built. The paths in this table are inside
 | ReadingRoom.ArticleCMS.Core | Plain C# with no Umbraco dependency: the reading time service, its options, the contract for the reading speed, the API key check, the takeaway lines, the reading levels, the star rating and shared constants |
 | ReadingRoom.ArticleCMS.Data | Umbraco-facing models: the Models Builder output for the document types, the view model of the newsletter form and the response models of the APIs |
 | ReadingRoom.ArticleCMS.Tests | xUnit tests for Core. The test folders mirror Core, and test doubles are in `Fakes` |
+| ReadingRoom.ArticleCMS.IntegrationTests | xUnit tests that run the whole site: pages, APIs, access rules and the adapter that reads the reading speed |
 
-Web references Core and Data. Data references Core. Tests references Core. Core references nothing. Umbraco itself is the data store, so there is no separate repository layer.
+Web references Core and Data. Data references Core. Tests references Core. IntegrationTests references Web. Core references nothing. Umbraco itself is the data store, so there is no separate repository layer.
 
 ## Decisions
 
@@ -159,5 +164,5 @@ Web references Core and Data. Data references Core. Tests references Core. Core 
 
 - Have the Spanish text reviewed by a native speaker.
 - Store the newsletter sign-ups, or send them to an email service.
-- Add tests for the adapter and the stats endpoint, and a continuous integration (CI) build that runs the tests.
+- Test the numbers that the stats endpoint returns. The tests only check that it refuses callers who are not signed in to the backoffice.
 - Build the database from the uSync files, with the steps written down and tested, so a refresh does not depend on a hand-cleaned binary file.
