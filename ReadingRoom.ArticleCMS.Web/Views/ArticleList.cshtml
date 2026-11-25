@@ -5,6 +5,12 @@
         .OrderByDescending(article => article.PublishDate);
 }
 
+@if (Model.HeroBanner is not null)
+{
+    @* the picture is decoration, so it has an empty alternative text *@
+    <img class="hero-banner rounded mb-4" src="@Model.HeroBanner.Url()" alt="" width="1200" height="320" />
+}
+
 <h1 class="mb-4">@Model.Name</h1>
 
 @if (articles.Any())

@@ -40,6 +40,7 @@ public class ArticlePageTests
     {
         string html = await GetPageAsync("/en/");
 
+        Assert.Contains("class=\"hero-banner", html, StringComparison.Ordinal);
         Assert.Contains("/en/lorem-ipsum-quick-read/", html, StringComparison.Ordinal);
         Assert.Contains("/en/lorem-ipsum-medium-read/", html, StringComparison.Ordinal);
         Assert.Contains("/en/lorem-ipsum-long-read/", html, StringComparison.Ordinal);

@@ -1,7 +1,7 @@
 {
   "id": "ReadingRoom.Editors",
   "name": "Reading Room Editors",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "extensions": [
     {
       "type": "propertyEditorUi",
@@ -49,6 +49,24 @@
       }
     },
     {
+      "type": "collectionView",
+      "alias": "ReadingRoom.CollectionView.ArticleCards",
+      "name": "Article Cards Collection View",
+      "element": "/App_Plugins/ReadingRoom.Editors/article-cards-view.js",
+      "weight": 300,
+      "meta": {
+        "label": "#readingRoom_articleCards",
+        "icon": "icon-grid",
+        "pathName": "article-cards"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.CollectionAlias",
+          "match": "Umb.Collection.Document"
+        }
+      ]
+    },
+    {
       "type": "dashboard",
       "alias": "ReadingRoom.Dashboard.ArticleStats",
       "name": "Article Stats Dashboard",
@@ -80,6 +98,11 @@
             "levelAdvanced": "Advanced",
             "rateStars": "Rate {0} out of {1}",
             "clearRating": "Clear",
+            "articleCards": "Article cards",
+            "ratedStars": "Rated {0} out of {1}",
+            "statePublished": "Published",
+            "statePendingChanges": "Published, with changes",
+            "stateDraft": "Draft",
             "addTakeaway": "Add takeaway",
             "remove": "Remove",
             "takeawayLabel": "Takeaway {0}",
@@ -114,6 +137,11 @@
             "levelAdvanced": "Avanzado",
             "rateStars": "Valorar con {0} de {1}",
             "clearRating": "Borrar",
+            "articleCards": "Tarjetas de artículos",
+            "ratedStars": "Valoración de {0} sobre {1}",
+            "statePublished": "Publicado",
+            "statePendingChanges": "Publicado, con cambios",
+            "stateDraft": "Borrador",
             "addTakeaway": "Añadir punto clave",
             "remove": "Eliminar",
             "takeawayLabel": "Punto clave {0}",
