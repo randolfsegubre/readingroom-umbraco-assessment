@@ -12,7 +12,7 @@ Status: every required part of the test is done, and so are the four stretch goa
 - Dashboard: an "Article stats" tab in the Content section. It calls a Management Application Programming Interface (API) endpoint and shows, for each language, the number of published articles and the five newest titles.
 - Reading level and star rating: two more custom editors. The reading level is a drop down list (beginner, intermediate or advanced). The star rating is a row of one to five stars with a Clear button. The article page shows both next to the reading time, in the language of the page, and the articles API returns them.
 - Article List: a Hero Banner picture shown above the list, and a list view in the backoffice with its own "Article cards" layout (publish date, reading level, rating and publish state) next to the standard table.
-- Newsletter form: a SurfaceController receives the form, shows validation messages, and redirects back to the page with a thank-you message. It does not store the email address.
+- Newsletter form: a SurfaceController receives the form, shows validation messages, and redirects back to the page with a thank-you message. It saves the address, the language of the page and the time in the database table `readingRoomNewsletterSignUp`. An address is saved once, and the visitor gets the same thank-you message either way. No email is sent, and no page lists the addresses.
 - Two languages: English (the default) and Spanish. The title, intro, takeaways and body vary by culture. The publish date, the hero image, the reading level and the editor rating are shared. The pages are served under `/en/` and `/es/`, with a language switcher, labels from Umbraco dictionary items and a matching `lang` attribute on the page.
 - Application Programming Interfaces: the Umbraco Content Delivery API and a small read-only articles API, both behind an API key and both listed in Swagger.
 - Tests: xUnit tests for the reading time service, the API key check, the takeaway lines, the reading levels and the star rating. Integration tests start the real site and call the pages, the APIs and the reading speed setting. A GitHub Actions workflow builds and tests each pull request.
@@ -186,7 +186,7 @@ Web references Core and Data. Data references Core. Tests references Core. Integ
 - Key takeaways keep the order the editor gave them. Empty lines are not shown on the page.
 - A Site Settings value that is empty, missing or not above zero means "use the default".
 - The site has two languages, English and Spanish. The Spanish text is a first-pass translation and has not been reviewed by a native speaker.
-- The newsletter form only records that a sign-up arrived. It does not store the address or send an email.
+- The newsletter form saves sign-ups and does not send email. The addresses are personal data, so a database that holds real ones must not be committed. Umbraco creates the table when the site starts, from the migration in `Web/Migrations`.
 - The hero images are simple placeholder images (`hero-blue.png`, `hero-green.png`, `hero-orange.png`).
 - Local development on Windows with SQLite. No other database was tried.
 
@@ -204,6 +204,6 @@ Web references Core and Data. Data references Core. Tests references Core. Integ
 ## Improvements
 
 - Have the Spanish text reviewed by a native speaker.
-- Store the newsletter sign-ups, or send them to an email service.
-- Test the numbers that the stats endpoint returns. The tests only check that it refuses callers who are not signed in to the backoffice.
+- Send the sign-ups to an email service with a confirmation step, and let a person remove their address.
+- Limit how often one visitor can send the newsletter form.
 - Stop committing the database once building it from the uSync files is part of the normal setup.
