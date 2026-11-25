@@ -1,7 +1,7 @@
-﻿{
+{
   "id": "ReadingRoom.Editors",
   "name": "Reading Room Editors",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "extensions": [
     {
       "type": "propertyEditorUi",
@@ -14,6 +14,23 @@
         "group": "#propertyEditorUIGroups_common",
         "propertyEditorSchemaAlias": "Umbraco.MultipleTextstring"
       }
+    },
+    {
+      "type": "dashboard",
+      "alias": "ReadingRoom.Dashboard.ArticleStats",
+      "name": "Article Stats Dashboard",
+      "element": "/App_Plugins/ReadingRoom.Editors/article-stats-dashboard.js",
+      "weight": -10,
+      "meta": {
+        "label": "Article stats",
+        "pathname": "article-stats"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.SectionAlias",
+          "match": "Umb.Section.Content"
+        }
+      ]
     }
   ]
 }
