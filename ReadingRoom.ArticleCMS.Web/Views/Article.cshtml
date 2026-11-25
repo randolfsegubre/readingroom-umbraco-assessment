@@ -24,7 +24,7 @@
         <time datetime="@Model.PublishDate.ToString(DateFormats.MachineReadable)">@Model.PublishDate.ToString(DateFormats.Display)</time>
         @if (readingMinutes > 0)
         {
-            <span class="badge text-bg-secondary ms-2">~@readingMinutes min read</span>
+            <span class="badge text-bg-secondary ms-2">@string.Format(Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.ArticleMinRead, "~{0} min read"), readingMinutes)</span>
         }
     </p>
 
@@ -41,7 +41,7 @@
     {
         <aside class="card border-primary-subtle bg-primary-subtle mb-4">
             <div class="card-body">
-                <h2 class="h5">Key takeaways</h2>
+                <h2 class="h5">@Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.ArticleKeyTakeaways, "Key takeaways")</h2>
                 <ul class="mb-0">
                     @foreach (string takeaway in takeaways)
                     {
@@ -58,6 +58,6 @@
 
     @if (articleList is not null)
     {
-        <a class="btn btn-outline-secondary mt-4" href="@articleList.Url()">Back to all articles</a>
+        <a class="btn btn-outline-secondary mt-4" href="@articleList.Url()">@Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.ArticleBackToAll, "Back to all articles")</a>
     }
 </article>

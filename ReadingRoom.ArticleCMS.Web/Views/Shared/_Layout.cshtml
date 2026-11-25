@@ -21,7 +21,7 @@
         @await Html.PartialAsync("NewsletterForm")
     </main>
     <footer class="container py-4 text-body-secondary small">
-        Built with Umbraco 17 and .NET 10
+        @Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.LayoutFooter, "Built with Umbraco 17 and .NET 10")
     </footer>
 </body>
 </html>
