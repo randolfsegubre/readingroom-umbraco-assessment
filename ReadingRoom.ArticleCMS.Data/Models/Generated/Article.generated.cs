@@ -81,7 +81,7 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual global::System.DateTime PublishDate => this.Value<global::System.DateTime>(_publishedValueFallback, "publishDate");
 
 		///<summary>
-		/// Takeaways List
+		/// Takeaways List: Add 0 to 5 short takeaways, one per box
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
 		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
