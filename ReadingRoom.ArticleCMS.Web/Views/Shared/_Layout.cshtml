@@ -1,6 +1,7 @@
 @inherits UmbracoViewPage
+@inject IVariationContextAccessor VariationContextAccessor
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@VariationContextAccessor.VariationContext?.Culture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +12,8 @@
 <body class="bg-body-tertiary">
     <header class="navbar bg-dark" data-bs-theme="dark">
         <div class="container">
-            <a class="navbar-brand fw-semibold" href="/">Article CMS</a>
+            <a class="navbar-brand fw-semibold" href="@Model.Root().Url()">Article CMS</a>
+            @await Html.PartialAsync("LanguageSwitcher")
         </div>
     </header>
     <main class="container py-4">
