@@ -1,5 +1,6 @@
 @inherits UmbracoViewPage<Article>
 @using ReadingRoom.ArticleCMS.Core.ReadingTime
+@using ReadingRoom.ArticleCMS.Core.Takeaways
 @using ReadingRoom.ArticleCMS.Core.Constants
 @inject IReadingTimeService ReadingTimeCalculator
 @{
@@ -7,14 +8,7 @@
     ArticleList? articleList = Model.Parent<ArticleList>();
     int readingMinutes = ReadingTimeCalculator.GetMinutes(Model.Body?.ToHtmlString());
 
-    List<string> takeaways = new List<string>();
-    foreach (string takeaway in Model.TakeawaysList ?? Enumerable.Empty<string>())
-    {
-        if (!string.IsNullOrWhiteSpace(takeaway))
-        {
-            takeaways.Add(takeaway);
-        }
-    }
+    List<string> takeaways = TakeawayLines.WithoutBlanks(Model.TakeawaysList);
 }
 
 <article class="article-container">

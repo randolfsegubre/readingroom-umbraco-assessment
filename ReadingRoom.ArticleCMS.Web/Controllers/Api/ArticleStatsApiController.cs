@@ -1,3 +1,4 @@
+using ReadingRoom.ArticleCMS.Web.Adapters;
 using Umbraco.Cms.Core.Models;
 
 namespace ReadingRoom.ArticleCMS.Web.Controllers.Api;
@@ -12,18 +13,13 @@ public sealed class ArticleStatsApiController : ManagementApiControllerBase
 {
     private const int LatestArticleCount = 5;
 
-    private readonly IPublishedContentQuery _contentQuery;
+    private readonly IPublishedArticleReader _articleReader;
     private readonly ILanguageService _languageService;
-    private readonly IVariationContextAccessor _variationContextAccessor;
 
-    public ArticleStatsApiController(
-        IPublishedContentQuery contentQuery,
-        ILanguageService languageService,
-        IVariationContextAccessor variationContextAccessor)
+    public ArticleStatsApiController(IPublishedArticleReader articleReader, ILanguageService languageService)
     {
-        _contentQuery = contentQuery;
+        _articleReader = articleReader;
         _languageService = languageService;
-        _variationContextAccessor = variationContextAccessor;
     }
 
     [HttpGet]
@@ -34,20 +30,7 @@ public sealed class ArticleStatsApiController : ManagementApiControllerBase
 
         foreach (ILanguage language in await _languageService.GetAllAsync())
         {
-            // The Title property reads the language of the variation context, so set it for each language.
-            _variationContextAccessor.VariationContext = new VariationContext(language.IsoCode);
-
-            List<Article> articles = new List<Article>();
-            foreach (IPublishedContent root in _contentQuery.ContentAtRoot())
-            {
-                foreach (Article article in root.DescendantsOrSelf<Article>(language.IsoCode))
-                {
-                    if (article.IsPublished(language.IsoCode))
-                    {
-                        articles.Add(article);
-                    }
-                }
-            }
+            List<Article> articles = _articleReader.GetPublished(language.IsoCode);
 
             LanguageStatsResponse languageStats = new LanguageStatsResponse
             {
