@@ -12,7 +12,8 @@ Status: every required part of the test is done, and so are the four stretch goa
 - Dashboard: an "Article stats" tab in the Content section. It calls a Management Application Programming Interface (API) endpoint and shows, for each language, the number of published articles and the five newest titles.
 - Newsletter form: a SurfaceController receives the form, shows validation messages, and redirects back to the page with a thank-you message. It does not store the email address.
 - Two languages: English (the default) and Spanish. The title, intro, takeaways and body vary by culture. The publish date and the hero image are shared. The pages are served under `/en/` and `/es/`, with a language switcher, labels from Umbraco dictionary items and a matching `lang` attribute on the page.
-- Tests: 21 xUnit tests for the reading time service, including the editor setting and its fallback.
+- Application Programming Interfaces: the Umbraco Content Delivery API and a small read-only articles API, both behind an API key and both listed in Swagger.
+- Tests: xUnit tests for the reading time service, the API key check and the takeaway lines.
 
 ## Quick start
 
@@ -50,7 +51,7 @@ This is a throwaway account for local development only. Do not reuse it anywhere
 
 In Visual Studio 2026, open `ReadingRoom.ArticleCMS.slnx`, make the Web project the startup project, choose the "Web" profile (opens the site) or the "Umbraco" profile (opens the backoffice login) and press F5. Both use the same addresses. Use only one of the two at a time. They share one port and one database.
 
-Run the 21 tests with `dotnet test` from the repository folder.
+Run the tests with `dotnet test` from the repository folder.
 
 This was tried on Windows with Visual Studio 2026 and the `dotnet` command line. macOS and Linux were not tried.
 
@@ -63,6 +64,21 @@ Umbraco's Content Delivery Application Programming Interface (API) is switched o
 - The Site Settings document type is excluded, so settings are not published through the API.
 - The search index that the API reads is built in the background after the first start, so allow about a minute.
 - Swagger, the interactive API page, is at `/umbraco/swagger` in Development. Choose the Umbraco Delivery API document, select Authorize and paste the key.
+
+## Articles API
+
+A small read-only API of our own sits next to the Delivery API. It uses the same `Api-Key` header and the same key. A request without the key, or with a wrong one, gets the status 401. When no key is configured, every request is refused.
+
+| Request | What it returns |
+|---|---|
+| `GET /api/reading-room/articles` | The published articles of one language, newest first, with the title, intro, publish date, reading minutes and address. `total` counts all of them |
+| `GET /api/reading-room/articles/{key}` | One article, also with the body, the key takeaways and the hero image address. The status is 404 when it is not published in that language |
+
+- `culture` chooses the language, for example `es`. Without it the default language is used. An unknown code gets the status 400.
+- The list takes `skip` (zero or more) and `take` (1 to 50, 10 when left out). Other values get the status 400.
+- In Swagger, choose the Reading Room Articles API document.
+
+The Delivery API returns every property of the content in Umbraco's own shape. This API returns a small shape that this project controls, with the reading time already worked out.
 
 ## Where to find each part of the test
 
@@ -91,9 +107,9 @@ Both backoffice extension options were built. The paths in this table are inside
 
 | Project | Purpose |
 |---|---|
-| ReadingRoom.ArticleCMS.Web | The Umbraco site: startup, views, controllers, the composer, the adapter to Umbraco, the backoffice extension in `App_Plugins` and the uSync files |
-| ReadingRoom.ArticleCMS.Core | Plain C# with no Umbraco dependency: the reading time service, its options, the contract for the reading speed and shared constants |
-| ReadingRoom.ArticleCMS.Data | Umbraco-facing models: the Models Builder output for the document types, the view model of the newsletter form and the response models of the stats endpoint |
+| ReadingRoom.ArticleCMS.Web | The Umbraco site: startup, views, controllers, the composers, the adapters to Umbraco, the backoffice extension in `App_Plugins` and the uSync files |
+| ReadingRoom.ArticleCMS.Core | Plain C# with no Umbraco dependency: the reading time service, its options, the contract for the reading speed, the API key check, the takeaway lines and shared constants |
+| ReadingRoom.ArticleCMS.Data | Umbraco-facing models: the Models Builder output for the document types, the view model of the newsletter form and the response models of the APIs |
 | ReadingRoom.ArticleCMS.Tests | xUnit tests for Core. The test folders mirror Core, and test doubles are in `Fakes` |
 
 Web references Core and Data. Data references Core. Tests references Core. Core references nothing. Umbraco itself is the data store, so there is no separate repository layer.

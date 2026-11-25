@@ -1,3 +1,4 @@
+using Microsoft.OpenApi;
 using ReadingRoom.ArticleCMS.Web.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Umbraco.Cms.Core.Composing;
@@ -14,11 +15,19 @@ public sealed class SwaggerComposer : IComposer
 
     public void Compose(IUmbracoBuilder builder)
     {
-        string[] documentsThatNeedTheApiKey = new[] { DeliveryApiDocumentName };
+        string[] documentsThatNeedTheApiKey = new[] { DeliveryApiDocumentName, ReadingRoomApi.ArticlesDocumentName };
+        string commentsFile = Path.Combine(AppContext.BaseDirectory, $"{typeof(SwaggerComposer).Assembly.GetName().Name}.xml");
 
         builder.Services.Configure<SwaggerGenOptions>(options =>
         {
+            options.SwaggerDoc(ReadingRoomApi.ArticlesDocumentName, new OpenApiInfo
+            {
+                Title = "Reading Room Articles API",
+                Version = "v1",
+                Description = "A read-only API for the published articles."
+            });
             options.DocumentFilter<ApiKeySecurityDocumentFilter>(new object[] { documentsThatNeedTheApiKey });
+            options.IncludeXmlComments(commentsFile);
         });
     }
 }
