@@ -5,7 +5,6 @@
 @using ReadingRoom.ArticleCMS.Core.Constants
 @inject IReadingTimeService ReadingTimeCalculator
 @{
-    Layout = "_Layout";
     ArticleList? articleList = Model.Parent<ArticleList>();
     int readingMinutes = ReadingTimeCalculator.GetMinutes(Model.Body?.ToHtmlString());
 

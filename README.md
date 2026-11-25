@@ -48,6 +48,45 @@ This is a throwaway account for local development only. Do not reuse it anywhere
 - The site does not start and says an address is already in use: another copy is running, for example in Visual Studio. Stop it first. Only one copy can use the ports and the database file at a time.
 - You want the original content back: starting the site and signing in writes to the SQLite file in `ReadingRoom.ArticleCMS.Web/umbraco/Data`, and saving in the backoffice rewrites files under `ReadingRoom.ArticleCMS.Web/uSync`. Stop the site and delete `Umbraco.sqlite.db-wal` and `Umbraco.sqlite.db-shm` in that folder if they exist, because they hold changes that belong to the old copy of the database. Then run `git restore ReadingRoom.ArticleCMS.Web/umbraco/Data/Umbraco.sqlite.db ReadingRoom.ArticleCMS.Web/uSync`. With a zip file, unzip it again instead.
 
+## Build a new database from the uSync files
+
+The committed database is what a clone runs. These steps throw it away and build a new one from `ReadingRoom.ArticleCMS.Web/uSync`. They are written for PowerShell, run from the repository folder.
+
+1. Stop the site.
+2. Delete the database and the temporary files:
+
+```powershell
+Remove-Item ReadingRoom.ArticleCMS.Web/umbraco/Data/Umbraco.sqlite.db*
+```
+
+```powershell
+Remove-Item -Recurse -ErrorAction SilentlyContinue ReadingRoom.ArticleCMS.Web/umbraco/Data/TEMP
+```
+
+3. Ask uSync to import on the first start, for this terminal only:
+
+```powershell
+$env:uSync__Settings__ImportOnFirstBoot = "true"
+```
+
+4. Start the site and wait for `Application started`. The first lines warn that the database is not available. That is expected, because Umbraco then installs it. The log says `uSync First boot complete` when the import has run.
+
+```powershell
+dotnet run --project ReadingRoom.ArticleCMS.Web
+```
+
+5. Stop the site with Ctrl+C and remove the setting:
+
+```powershell
+Remove-Item Env:uSync__Settings__ImportOnFirstBoot
+```
+
+The new database has the same content and the sign in account from `appsettings.Development.json`. The start also rewrites the two template files in `Views` (only their encoding changes) and the generated models. To drop those changes, run the next command. It also discards your own uncommitted edits in these two folders.
+
+```powershell
+git restore ReadingRoom.ArticleCMS.Web/Views ReadingRoom.ArticleCMS.Data
+```
+
 ## Visual Studio and tests
 
 In Visual Studio 2026, open `ReadingRoom.ArticleCMS.slnx`, make the Web project the startup project, choose the "Web" profile (opens the site) or the "Umbraco" profile (opens the backoffice login) and press F5. Both use the same addresses. Use only one of the two at a time. They share one port and one database.
@@ -132,7 +171,8 @@ Web references Core and Data. Data references Core. Tests references Core. Integ
 - The key takeaways editor is plain JavaScript with no build step. It reuses Umbraco's Multiple Text String storage (`Umbraco.MultipleTextstring`), so Umbraco handles saving and gives the model a ready `IEnumerable<string>`.
 - Package versions live in one place, `Directory.Packages.props`.
 - Warnings are errors in Core, Data and Tests. The Web project is exempt because it contains Umbraco template code that is not ours. The rules in `.editorconfig` are checked by the build for those three projects and shown as warnings in the editor for Web.
-- Document types, data types, languages, hostnames, dictionary items and content are exported with uSync into `ReadingRoom.ArticleCMS.Web/uSync/v17`, so structure changes show up as readable text in a diff. uSync exports when an item is saved in the backoffice. It does not import when the site starts here, so the committed database is what a clone runs.
+- Document types, data types, languages, hostnames, dictionary items and content are exported with uSync into `ReadingRoom.ArticleCMS.Web/uSync/v17`, so structure changes show up as readable text in a diff. uSync exports when an item is saved in the backoffice. It does not import when the site starts here, so the committed database is what a clone runs. A new database can be built from the files, see above.
+- The layout is set in `Views/_ViewStart.cshtml`, not in each view. Umbraco reads a `Layout` line inside a template as a master template, so the templates could not be created in a new database while the line was there.
 - The SQLite database and the three hero images in `wwwroot/media` are committed, so a clone runs with content straight away. The database is cleaned before each commit: the rows that hold the machine name are emptied and the file is rewritten, so no deleted data stays inside it.
 - `Umbraco:CMS:Imaging:HMACSecretKey` in `appsettings.json` signs image resize addresses. It is not a login. A production deployment must supply its own value, for example through the environment variable `Umbraco__CMS__Imaging__HMACSecretKey`.
 
@@ -165,4 +205,4 @@ Web references Core and Data. Data references Core. Tests references Core. Integ
 - Have the Spanish text reviewed by a native speaker.
 - Store the newsletter sign-ups, or send them to an email service.
 - Test the numbers that the stats endpoint returns. The tests only check that it refuses callers who are not signed in to the backoffice.
-- Build the database from the uSync files, with the steps written down and tested, so a refresh does not depend on a hand-cleaned binary file.
+- Stop committing the database once building it from the uSync files is part of the normal setup.

@@ -1,7 +1,6 @@
 @inherits UmbracoViewPage<ArticleList>
 @using ReadingRoom.ArticleCMS.Core.Constants
 @{
-    Layout = "_Layout";
     IEnumerable<Article> articles = Model.Children<Article>()
         .OrderByDescending(article => article.PublishDate);
 }
