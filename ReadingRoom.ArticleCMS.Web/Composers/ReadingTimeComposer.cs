@@ -1,3 +1,4 @@
+using ReadingRoom.ArticleCMS.Web.Adapters;
 using Umbraco.Cms.Core.Composing;
 
 namespace ReadingRoom.ArticleCMS.Web.Composers;
@@ -13,6 +14,7 @@ public sealed class ReadingTimeComposer : IComposer
         builder.Config.GetSection(ConfigurationSections.ReadingTime).Bind(options);
 
         builder.Services.AddSingleton(options);
-        builder.Services.AddSingleton<IReadingTimeService, ReadingTimeService>();
+        builder.Services.AddScoped<IReadingSpeedSource, SiteSettingsReadingSpeedSource>();
+        builder.Services.AddScoped<IReadingTimeService, ReadingTimeService>();
     }
 }
