@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ReadingRoom.ArticleCMS.Core.Constants;
 
 namespace ReadingRoom.ArticleCMS.Data.Models.ViewModels;
 
@@ -7,7 +8,7 @@ namespace ReadingRoom.ArticleCMS.Data.Models.ViewModels;
 /// </summary>
 public sealed class NewsletterSignUpViewModel
 {
-    [Required(ErrorMessage = "Please enter your email address.")]
-    [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+    [Required(ErrorMessage = DictionaryKeys.NewsletterEmailRequired)]
+    [EmailAddress(ErrorMessage = DictionaryKeys.NewsletterEmailInvalid)]
     public string Email { get; set; } = string.Empty;
 }

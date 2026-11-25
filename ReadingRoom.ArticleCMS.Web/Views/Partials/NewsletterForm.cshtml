@@ -1,28 +1,37 @@
+@inherits UmbracoViewPage
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 @using ReadingRoom.ArticleCMS.Core.Constants
 @using ReadingRoom.ArticleCMS.Data.Models.ViewModels
 @using ReadingRoom.ArticleCMS.Web.Controllers
 @{
     string? attemptedEmail = ViewData.ModelState[nameof(NewsletterSignUpViewModel.Email)]?.AttemptedValue;
-    string? thankYou = TempData[TempDataKeys.NewsletterMessage] as string;
+    string? thankYouKey = TempData[TempDataKeys.NewsletterMessage] as string;
+    ModelStateEntry? emailEntry = ViewData.ModelState[nameof(NewsletterSignUpViewModel.Email)];
 }
 
 <section class="card mt-5">
     <div class="card-body">
-        <h2 class="h5 card-title">Get new articles by email</h2>
+        <h2 class="h5 card-title">@Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.NewsletterHeading, "Get new articles by email")</h2>
 
-        @if (!string.IsNullOrEmpty(thankYou))
+        @if (!string.IsNullOrEmpty(thankYouKey))
         {
-            <div class="alert alert-success" role="status">@thankYou</div>
+            <div class="alert alert-success" role="status">@Umbraco.GetDictionaryValueOrDefault(thankYouKey, "Thank you. You are on the list.")</div>
         }
 
         @using (Html.BeginUmbracoForm<NewsletterSurfaceController>(nameof(NewsletterSurfaceController.Subscribe)))
         {
             <div class="mb-3">
-                <label for="@nameof(NewsletterSignUpViewModel.Email)" class="form-label">Email address</label>
+                <label for="@nameof(NewsletterSignUpViewModel.Email)" class="form-label">@Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.NewsletterEmailLabel, "Email address")</label>
                 <input type="email" class="form-control" id="@nameof(NewsletterSignUpViewModel.Email)" name="@nameof(NewsletterSignUpViewModel.Email)" value="@attemptedEmail" />
-                @Html.ValidationMessage(nameof(NewsletterSignUpViewModel.Email), new { @class = "text-danger small" })
+                @if (emailEntry is not null)
+                {
+                    foreach (ModelError error in emailEntry.Errors)
+                    {
+                        <span class="text-danger small d-block">@Umbraco.GetDictionaryValueOrDefault(error.ErrorMessage, "Please check your email address.")</span>
+                    }
+                }
             </div>
-            <button type="submit" class="btn btn-primary">Subscribe</button>
+            <button type="submit" class="btn btn-primary">@Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.NewsletterSubscribe, "Subscribe")</button>
         }
     </div>
 </section>

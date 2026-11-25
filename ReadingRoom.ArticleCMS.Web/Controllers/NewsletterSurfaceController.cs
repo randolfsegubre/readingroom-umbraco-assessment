@@ -33,7 +33,7 @@ public sealed class NewsletterSurfaceController : SurfaceController
         _logger.LogInformation("A newsletter sign-up was received.");
 
         // Post/Redirect/Get: the redirect stops a browser refresh from posting the form again.
-        TempData[TempDataKeys.NewsletterMessage] = "Thank you. You are on the list.";
+        TempData[TempDataKeys.NewsletterMessage] = DictionaryKeys.NewsletterThankYou;
         return RedirectToCurrentUmbracoPage();
     }
 }

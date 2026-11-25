@@ -35,5 +35,5 @@
 }
 else
 {
-    <p class="text-body-secondary">There are no articles yet.</p>
+    <p class="text-body-secondary">@Umbraco.GetDictionaryValueOrDefault(DictionaryKeys.ArticleListNoArticles, "There are no articles yet.")</p>
 }
