@@ -54,6 +54,16 @@ Run the 21 tests with `dotnet test` from the repository folder.
 
 This was tried on Windows with Visual Studio 2026 and the `dotnet` command line. macOS and Linux were not tried.
 
+## Content Delivery API
+
+Umbraco's Content Delivery Application Programming Interface (API) is switched on and needs a key. Send the key in the `Api-Key` request header. A request without it, or with a wrong key, gets the status 401.
+
+- The development key is `Umbraco:CMS:DeliveryApi:ApiKey` in `appsettings.Development.json`. It is for local use only. A production deployment must supply its own, for example through the environment variable `Umbraco__CMS__DeliveryApi__ApiKey`.
+- The list is at `/umbraco/delivery/api/v2/content`. Add the `Accept-Language` header, for example `es`, to get another language.
+- The Site Settings document type is excluded, so settings are not published through the API.
+- The search index that the API reads is built in the background after the first start, so allow about a minute.
+- Swagger, the interactive API page, is at `/umbraco/swagger` in Development. Choose the Umbraco Delivery API document, select Authorize and paste the key.
+
 ## Where to find each part of the test
 
 | Test item | Where it is |
@@ -136,4 +146,3 @@ Web references Core and Data. Data references Core. Tests references Core. Core 
 - Store the newsletter sign-ups, or send them to an email service.
 - Add tests for the adapter and the stats endpoint, and a continuous integration (CI) build that runs the tests.
 - Build the database from the uSync files, with the steps written down and tested, so a refresh does not depend on a hand-cleaned binary file.
-- Expose the articles through the Umbraco Delivery API.
