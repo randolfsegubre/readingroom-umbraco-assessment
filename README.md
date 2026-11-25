@@ -70,7 +70,7 @@ Remove-Item -Recurse -ErrorAction SilentlyContinue ReadingRoom.ArticleCMS.Web/um
 $env:uSync__Settings__ImportOnFirstBoot = "true"
 ```
 
-4. Start the site and wait for `Application started`. The first lines warn that the database is not available. That is expected, because Umbraco then installs it. The log says `uSync First boot complete` when the import has run.
+4. Start the site and wait for the log line `uSync First boot complete`. The first lines warn that the database is not available. That is expected, because Umbraco then installs it. The site can answer with the status 503 until the import has finished.
 
 ```powershell
 dotnet run --project ReadingRoom.ArticleCMS.Web
