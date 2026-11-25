@@ -1,0 +1,27 @@
+@inherits UmbracoViewPage
+@using System.Globalization
+@inject IVariationContextAccessor VariationContextAccessor
+@{
+    string? currentCulture = VariationContextAccessor.VariationContext?.Culture;
+    IPublishedContent root = Model.Root();
+}
+
+<ul class="navbar-nav flex-row gap-3">
+    @foreach (KeyValuePair<string, PublishedCultureInfo> culture in root.Cultures)
+    {
+        IPublishedContent target = Model.IsInvariantOrHasCulture(culture.Key) ? Model : root;
+        CultureInfo cultureInfo = CultureInfo.GetCultureInfo(culture.Key);
+        string nativeName = cultureInfo.NativeName;
+        string cultureName = char.ToUpper(nativeName[0], cultureInfo) + nativeName.Substring(1);
+        <li class="nav-item">
+            @if (string.Equals(culture.Key, currentCulture, StringComparison.OrdinalIgnoreCase))
+            {
+                <span class="nav-link active" aria-current="true">@cultureName</span>
+            }
+            else
+            {
+                <a class="nav-link" href="@target.Url(culture.Key)" hreflang="@culture.Key" lang="@culture.Key">@cultureName</a>
+            }
+        </li>
+    }
+</ul>
