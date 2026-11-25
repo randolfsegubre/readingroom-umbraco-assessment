@@ -1,7 +1,7 @@
 {
   "id": "ReadingRoom.Editors",
   "name": "Reading Room Editors",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "extensions": [
     {
       "type": "propertyEditorUi",
@@ -17,7 +17,7 @@
           "properties": [
             {
               "alias": "placeholder",
-              "label": "Placeholder",
+              "label": "#general_placeholder",
               "propertyEditorUiAlias": "Umb.PropertyEditorUi.TextBox"
             }
           ]
@@ -31,7 +31,7 @@
       "element": "/App_Plugins/ReadingRoom.Editors/article-stats-dashboard.js",
       "weight": -10,
       "meta": {
-        "label": "Article stats",
+        "label": "#readingRoom_articleStats",
         "pathname": "article-stats"
       },
       "conditions": [
@@ -40,6 +40,52 @@
           "match": "Umb.Section.Content"
         }
       ]
+    },
+    {
+      "type": "localization",
+      "alias": "ReadingRoom.Localization.En",
+      "name": "Reading Room English",
+      "meta": {
+        "culture": "en",
+        "localizations": {
+          "readingRoom": {
+            "addTakeaway": "Add takeaway",
+            "remove": "Remove",
+            "takeawayLabel": "Takeaway {0}",
+            "removeTakeawayLabel": "Remove takeaway {0}",
+            "limitsMinMax": "Takeaways: minimum {0}, maximum {1}",
+            "limitsMax": "Takeaways: maximum {0}",
+            "limitsMin": "Takeaways: minimum {0}",
+            "articleStats": "Article stats",
+            "publishedArticles": "Published articles:",
+            "latestArticles": "Latest articles",
+            "statsLoadFailed": "The article statistics could not be loaded (status {0})."
+          }
+        }
+      }
+    },
+    {
+      "type": "localization",
+      "alias": "ReadingRoom.Localization.Es",
+      "name": "Reading Room Spanish",
+      "meta": {
+        "culture": "es",
+        "localizations": {
+          "readingRoom": {
+            "addTakeaway": "Añadir punto clave",
+            "remove": "Eliminar",
+            "takeawayLabel": "Punto clave {0}",
+            "removeTakeawayLabel": "Eliminar punto clave {0}",
+            "limitsMinMax": "Puntos clave: mínimo {0}, máximo {1}",
+            "limitsMax": "Puntos clave: máximo {0}",
+            "limitsMin": "Puntos clave: mínimo {0}",
+            "articleStats": "Estadísticas de artículos",
+            "publishedArticles": "Artículos publicados:",
+            "latestArticles": "Últimos artículos",
+            "statsLoadFailed": "No se pudieron cargar las estadísticas de los artículos (estado {0})."
+          }
+        }
+      }
     }
   ]
 }
