@@ -46,6 +46,18 @@ public class ArticlePageTests
         Assert.Contains("/en/lorem-ipsum-long-read/", html, StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("/en/", "Stories worth your time", "Short reads with the key points up front")]
+    [InlineData("/es/", "Historias que valen tu tiempo", "Lecturas breves con los puntos clave")]
+    public async Task TheHeroBanner_ShowsTheTitleAndDescriptionOfTheLanguage(string url, string title, string description)
+    {
+        string html = await GetPageAsync(url);
+
+        Assert.Contains($"<h1 class=\"hero-banner-title\">{title}</h1>", html, StringComparison.Ordinal);
+        Assert.Contains(description, html, StringComparison.Ordinal);
+        Assert.Equal(2, html.Split("<h1").Length);
+    }
+
     private async Task<string> GetPageAsync(string url)
     {
         using HttpClient client = _site.CreateClient();
