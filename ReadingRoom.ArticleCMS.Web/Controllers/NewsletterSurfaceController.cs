@@ -1,3 +1,6 @@
+using System.Globalization;
+using ReadingRoom.ArticleCMS.Core.Newsletter;
+
 namespace ReadingRoom.ArticleCMS.Web.Controllers;
 
 /// <summary>
@@ -6,6 +9,7 @@ namespace ReadingRoom.ArticleCMS.Web.Controllers;
 public sealed class NewsletterSurfaceController : SurfaceController
 {
     private readonly ILogger<NewsletterSurfaceController> _logger;
+    private readonly INewsletterSignUpStore _signUpStore;
 
     public NewsletterSurfaceController(
         IUmbracoContextAccessor umbracoContextAccessor,
@@ -14,15 +18,17 @@ public sealed class NewsletterSurfaceController : SurfaceController
         AppCaches appCaches,
         IProfilingLogger profilingLogger,
         IPublishedUrlProvider publishedUrlProvider,
-        ILogger<NewsletterSurfaceController> logger)
+        ILogger<NewsletterSurfaceController> logger,
+        INewsletterSignUpStore signUpStore)
         : base(umbracoContextAccessor, databaseFactory, services, appCaches, profilingLogger, publishedUrlProvider)
     {
         _logger = logger;
+        _signUpStore = signUpStore;
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Subscribe(NewsletterSignUpViewModel model)
+    public async Task<IActionResult> Subscribe(NewsletterSignUpViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -30,7 +36,10 @@ public sealed class NewsletterSurfaceController : SurfaceController
             return CurrentUmbracoPage();
         }
 
-        _logger.LogInformation("A newsletter sign-up was received.");
+        await _signUpStore.AddAsync(model.Email, CultureInfo.CurrentUICulture.Name);
+
+        // the address is personal data, so it is not written to the log.
+        _logger.LogInformation("A newsletter sign-up was saved.");
 
         // Post/Redirect/Get: the redirect stops a browser refresh from posting the form again.
         TempData[TempDataKeys.NewsletterMessage] = DictionaryKeys.NewsletterThankYou;

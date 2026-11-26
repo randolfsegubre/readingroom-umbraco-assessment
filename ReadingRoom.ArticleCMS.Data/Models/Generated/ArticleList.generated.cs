@@ -48,5 +48,29 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		}
 
 		// properties
+
+		///<summary>
+		/// Hero Banner: A wide picture shown above the list of articles
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("heroBanner")]
+		public virtual global::Umbraco.Cms.Core.Models.MediaWithCrops HeroBanner => this.Value<global::Umbraco.Cms.Core.Models.MediaWithCrops>(_publishedValueFallback, "heroBanner");
+
+		///<summary>
+		/// Hero Description: One or two short sentences under the hero title
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("heroDescription")]
+		public virtual string HeroDescription => this.Value<string>(_publishedValueFallback, "heroDescription");
+
+		///<summary>
+		/// Hero Title: The large heading on the hero banner
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("heroTitle")]
+		public virtual string HeroTitle => this.Value<string>(_publishedValueFallback, "heroTitle");
 	}
 }

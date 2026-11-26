@@ -1,3 +1,102 @@
+.hero-banner {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 28rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1d3f73, #4f9bdc);
+}
+
+.hero-banner-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.6s ease;
+  animation: hero-zoom 14s ease-out both;
+}
+
+.hero-banner:hover .hero-banner-image {
+  filter: saturate(1.25) brightness(1.05);
+}
+
+/* darkens the lower left corner, so the white text can be read on any picture */
+.hero-banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(20deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.3) 55%, rgba(0, 0, 0, 0));
+}
+
+.hero-banner-text {
+  position: relative;
+  z-index: 1;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.hero-banner-title {
+  font-size: clamp(2rem, 6vw, 3.75rem);
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+  animation: hero-rise 0.9s ease-out 0.2s both;
+}
+
+/* a short line that draws itself under the title */
+.hero-banner-title::after {
+  content: "";
+  display: block;
+  width: 5rem;
+  height: 0.3rem;
+  margin-top: 0.75rem;
+  background: #ffc107;
+  transform-origin: left;
+  animation: hero-line 0.8s ease-out 0.9s both;
+}
+
+.hero-banner-description {
+  max-width: 38rem;
+  margin-bottom: 0;
+  font-size: 1.25rem;
+  animation: hero-rise 0.9s ease-out 0.45s both;
+}
+
+@keyframes hero-zoom {
+  from { transform: scale(1.15); }
+  to { transform: scale(1); }
+}
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(1.5rem); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes hero-line {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (max-width: 575.98px) {
+  .hero-banner {
+    min-height: 20rem;
+  }
+}
+
+/* visitors who ask their system for less motion get the banner without movement */
+@media (prefers-reduced-motion: reduce) {
+  .hero-banner-image,
+  .hero-banner-title,
+  .hero-banner-title::after,
+  .hero-banner-description {
+    animation: none;
+    transition: none;
+  }
+}
+
 .article-container {
   max-width: 46rem;
   margin-left: auto;

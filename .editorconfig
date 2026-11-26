@@ -268,5 +268,5 @@ dotnet_naming_style.begins_with_i.word_separator =
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
 
 # Test method names use underscores (Method_Expectation_Condition), which CA1707 would flag.
-[ReadingRoom.ArticleCMS.Tests/**.cs]
+[{ReadingRoom.ArticleCMS.Tests,ReadingRoom.ArticleCMS.IntegrationTests}/**.cs]
 dotnet_diagnostic.CA1707.severity = none

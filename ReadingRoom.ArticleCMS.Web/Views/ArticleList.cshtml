@@ -1,12 +1,41 @@
 @inherits UmbracoViewPage<ArticleList>
 @using ReadingRoom.ArticleCMS.Core.Constants
 @{
-    Layout = "_Layout";
     IEnumerable<Article> articles = Model.Children<Article>()
         .OrderByDescending(article => article.PublishDate);
+    bool hasHeroTitle = !string.IsNullOrWhiteSpace(Model.HeroTitle);
+    bool hasHeroDescription = !string.IsNullOrWhiteSpace(Model.HeroDescription);
 }
 
-<h1 class="mb-4">@Model.Name</h1>
+@* the layout puts this section above the page, so the banner can use the full width *@
+@section HeroBanner {
+    @if (Model.HeroBanner is not null || hasHeroTitle || hasHeroDescription)
+    {
+        <section class="hero-banner">
+            @if (Model.HeroBanner is not null)
+            {
+                @* the picture is decoration, so it has an empty alternative text *@
+                <img class="hero-banner-image" src="@Model.HeroBanner.Url()" alt="" width="1600" height="600" />
+            }
+            <div class="container hero-banner-text">
+                @if (hasHeroTitle)
+                {
+                    <h1 class="hero-banner-title">@Model.HeroTitle</h1>
+                }
+                @if (hasHeroDescription)
+                {
+                    <p class="hero-banner-description">@Model.HeroDescription</p>
+                }
+            </div>
+        </section>
+    }
+}
+
+@* a page has one main heading: the hero title when there is one, otherwise the page name *@
+@if (!hasHeroTitle)
+{
+    <h1 class="mb-4">@Model.Name</h1>
+}
 
 @if (articles.Any())
 {

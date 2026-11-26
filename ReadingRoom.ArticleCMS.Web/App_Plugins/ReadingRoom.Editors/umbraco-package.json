@@ -1,7 +1,7 @@
 {
   "id": "ReadingRoom.Editors",
   "name": "Reading Room Editors",
-  "version": "1.5.0",
+  "version": "1.8.0",
   "extensions": [
     {
       "type": "propertyEditorUi",
@@ -23,6 +23,48 @@
           ]
         }
       }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "ReadingRoom.PropertyEditorUi.ReadingLevel",
+      "name": "Reading Level Property Editor UI",
+      "element": "/App_Plugins/ReadingRoom.Editors/reading-level.js",
+      "meta": {
+        "label": "Reading Level",
+        "icon": "icon-academy",
+        "group": "#propertyEditorUIGroups_common",
+        "propertyEditorSchemaAlias": "Umbraco.Plain.String"
+      }
+    },
+    {
+      "type": "propertyEditorUi",
+      "alias": "ReadingRoom.PropertyEditorUi.StarRating",
+      "name": "Star Rating Property Editor UI",
+      "element": "/App_Plugins/ReadingRoom.Editors/star-rating.js",
+      "meta": {
+        "label": "Star Rating",
+        "icon": "icon-rate",
+        "group": "#propertyEditorUIGroups_common",
+        "propertyEditorSchemaAlias": "Umbraco.Integer"
+      }
+    },
+    {
+      "type": "collectionView",
+      "alias": "ReadingRoom.CollectionView.ArticleCards",
+      "name": "Article Cards Collection View",
+      "element": "/App_Plugins/ReadingRoom.Editors/article-cards-view.js",
+      "weight": 300,
+      "meta": {
+        "label": "#readingRoom_articleCards",
+        "icon": "icon-grid",
+        "pathName": "article-cards"
+      },
+      "conditions": [
+        {
+          "alias": "Umb.Condition.CollectionAlias",
+          "match": "Umb.Collection.Document"
+        }
+      ]
     },
     {
       "type": "dashboard",
@@ -49,6 +91,18 @@
         "culture": "en",
         "localizations": {
           "readingRoom": {
+            "readingLevel": "Reading level",
+            "levelNotSet": "Not set",
+            "levelBeginner": "Beginner",
+            "levelIntermediate": "Intermediate",
+            "levelAdvanced": "Advanced",
+            "rateStars": "Rate {0} out of {1}",
+            "clearRating": "Clear",
+            "articleCards": "Article cards",
+            "ratedStars": "Rated {0} out of {1}",
+            "statePublished": "Published",
+            "statePendingChanges": "Published, with changes",
+            "stateDraft": "Draft",
             "addTakeaway": "Add takeaway",
             "remove": "Remove",
             "takeawayLabel": "Takeaway {0}",
@@ -56,6 +110,10 @@
             "limitsMinMax": "Takeaways: minimum {0}, maximum {1}",
             "limitsMax": "Takeaways: maximum {0}",
             "limitsMin": "Takeaways: minimum {0}",
+            "tooFew": "Add at least {0} takeaways. There are {1} now.",
+            "tooMany": "The maximum is {0} takeaways. There are {1} now.",
+            "moveUpLabel": "Move takeaway {0} up",
+            "moveDownLabel": "Move takeaway {0} down",
             "articleStats": "Article stats",
             "publishedArticles": "Published articles:",
             "latestArticles": "Latest articles",
@@ -72,6 +130,18 @@
         "culture": "es",
         "localizations": {
           "readingRoom": {
+            "readingLevel": "Nivel de lectura",
+            "levelNotSet": "Sin definir",
+            "levelBeginner": "Principiante",
+            "levelIntermediate": "Intermedio",
+            "levelAdvanced": "Avanzado",
+            "rateStars": "Valorar con {0} de {1}",
+            "clearRating": "Borrar",
+            "articleCards": "Tarjetas de artículos",
+            "ratedStars": "Valoración de {0} sobre {1}",
+            "statePublished": "Publicado",
+            "statePendingChanges": "Publicado, con cambios",
+            "stateDraft": "Borrador",
             "addTakeaway": "Añadir punto clave",
             "remove": "Eliminar",
             "takeawayLabel": "Punto clave {0}",
@@ -79,6 +149,10 @@
             "limitsMinMax": "Puntos clave: mínimo {0}, máximo {1}",
             "limitsMax": "Puntos clave: máximo {0}",
             "limitsMin": "Puntos clave: mínimo {0}",
+            "tooFew": "Añade al menos {0} puntos clave. Ahora hay {1}.",
+            "tooMany": "El máximo es de {0} puntos clave. Ahora hay {1}.",
+            "moveUpLabel": "Subir el punto clave {0}",
+            "moveDownLabel": "Bajar el punto clave {0}",
             "articleStats": "Estadísticas de artículos",
             "publishedArticles": "Artículos publicados:",
             "latestArticles": "Últimos artículos",

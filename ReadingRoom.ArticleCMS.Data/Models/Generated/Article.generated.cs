@@ -58,6 +58,13 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		public virtual global::Umbraco.Cms.Core.Strings.IHtmlEncodedString Body => this.Value<global::Umbraco.Cms.Core.Strings.IHtmlEncodedString>(_publishedValueFallback, "body");
 
 		///<summary>
+		/// Editor Rating: Your rating of the article, shown as stars
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
+		[ImplementPropertyType("editorRating")]
+		public virtual int EditorRating => this.Value<int>(_publishedValueFallback, "editorRating");
+
+		///<summary>
 		/// Hero Image
 		///</summary>
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
@@ -79,6 +86,14 @@ namespace Umbraco.Cms.Web.Common.PublishedModels
 		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
 		[ImplementPropertyType("publishDate")]
 		public virtual global::System.DateTime PublishDate => this.Value<global::System.DateTime>(_publishedValueFallback, "publishDate");
+
+		///<summary>
+		/// Reading Level: Who the article is written for
+		///</summary>
+		[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Umbraco.ModelsBuilder.Embedded", "17.8.2+6085291")]
+		[global::System.Diagnostics.CodeAnalysis.MaybeNull]
+		[ImplementPropertyType("readingLevel")]
+		public virtual string ReadingLevel => this.Value<string>(_publishedValueFallback, "readingLevel");
 
 		///<summary>
 		/// Takeaways List: Add 0 to 5 short takeaways, one per box
